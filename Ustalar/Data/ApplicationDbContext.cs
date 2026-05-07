@@ -80,5 +80,31 @@ public class ApplicationDbContext : DbContext
             if (updatedAt != null && updatedAt.ClrType == typeof(DateTime))
                 updatedAt.SetDefaultValueSql("NOW()");
         }
+
+        // Seed: Города Азербайджана
+        modelBuilder.Entity<City>().HasData(
+            new City { Id = 1, NameAz = "Bakı", NameRu = "Баку", Slug = "baku" },
+            new City { Id = 2, NameAz = "Gəncə", NameRu = "Гянджа", Slug = "ganja" },
+            new City { Id = 3, NameAz = "Sumqayıt", NameRu = "Сумгайыт", Slug = "sumgayit" },
+            new City { Id = 4, NameAz = "Mingəçevir", NameRu = "Мингечевир", Slug = "mingachevir" },
+            new City { Id = 5, NameAz = "Lənkəran", NameRu = "Ленкорань", Slug = "lankaran" },
+            new City { Id = 6, NameAz = "Şirvan", NameRu = "Ширван", Slug = "shirvan" },
+            new City { Id = 7, NameAz = "Naxçıvan", NameRu = "Нахчыван", Slug = "nakhchivan" },
+            new City { Id = 8, NameAz = "Quba", NameRu = "Куба", Slug = "quba" }
+        );
+
+        // Seed: Строительные специализации
+        modelBuilder.Entity<Specialization>().HasData(
+            new Specialization { Id = 1, NameAz = "Elektrik", NameRu = "Электрик", Slug = "elektrik" },
+            new Specialization { Id = 2, NameAz = "Santexnik", NameRu = "Сантехник", Slug = "santexnik" },
+            new Specialization { Id = 3, NameAz = "Rəssam-Boyaqçı", NameRu = "Маляр", Slug = "boyaqci" },
+            new Specialization { Id = 4, NameAz = "Dülgər", NameRu = "Плотник", Slug = "dulger" },
+            new Specialization { Id = 5, NameAz = "Qaynaqçı", NameRu = "Сварщик", Slug = "qaynaqci" },
+            new Specialization { Id = 6, NameAz = "Kafel ustası", NameRu = "Плиточник", Slug = "kafel" },
+            new Specialization { Id = 7, NameAz = "Gipsokarton ustası", NameRu = "Гипсокартон", Slug = "gipsokarton" },
+            new Specialization { Id = 8, NameAz = "Kondisioner montajı", NameRu = "Кондиционеры", Slug = "kondisioner" },
+            new Specialization { Id = 9, NameAz = "Parket ustası", NameRu = "Паркетчик", Slug = "parket" },
+            new Specialization { Id = 10, NameAz = "Suvaqçı", NameRu = "Штукатур", Slug = "suvaqci" }
+        );
     }
 }

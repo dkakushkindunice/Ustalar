@@ -117,7 +117,7 @@
         "Шаг 4: SELECT slug FROM specializations — все slug уникальны и в формате kebab-case"
       ],
       "dependencies": ["TASK-004"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-006",
