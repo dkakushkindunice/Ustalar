@@ -1,0 +1,8 @@
+{
+  "name": "ustalar",
+  "private": true,
+  "scripts": {
+    "css:build": "npx @tailwindcss/cli@next -i ./wwwroot/css/app.css -o ./wwwroot/css/app.min.css --minify",
+    "css:watch": "npx @tailwindcss/cli@next -i ./wwwroot/css/app.css -o ./wwwroot/css/app.min.css --watch"
+  }
+}

@@ -43,6 +43,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<MasterAuthService>();
 builder.Services.AddScoped<AdminAuthService>();
+builder.Services.AddScoped<SmsVerificationService>();
+builder.Services.AddSingleton<ISmsService, TwilioSmsService>();
 
 // Rate Limiting
 builder.Services.AddRateLimiter(options =>

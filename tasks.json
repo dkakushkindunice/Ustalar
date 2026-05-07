@@ -179,7 +179,7 @@
         "Шаг 4: CSS build в CI работает без ошибок"
       ],
       "dependencies": ["TASK-001"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-009",
@@ -304,7 +304,7 @@
         "Шаг 4: Повторный запрос SMS — предыдущая запись помечается is_used=true"
       ],
       "dependencies": ["TASK-001"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-015",
