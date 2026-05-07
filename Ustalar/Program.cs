@@ -60,18 +60,27 @@ builder.Services.AddScoped<SmsVerificationService>();
 builder.Services.AddScoped<MastersCatalogService>();
 builder.Services.AddSingleton<ISmsService, TwilioSmsService>();
 
-// R2 / S3 file storage
+// R2 / S3 file storage — falls back to local disk when credentials are not configured
 var r2Config = builder.Configuration.GetSection("R2");
-var r2Credentials = new BasicAWSCredentials(
-    r2Config["AccessKey"] ?? throw new InvalidOperationException("R2:AccessKey not configured"),
-    r2Config["SecretKey"] ?? throw new InvalidOperationException("R2:SecretKey not configured"));
-var r2S3Config = new AmazonS3Config
+var r2ServiceUrl = r2Config["ServiceUrl"] ?? "";
+var r2AccessKey = r2Config["AccessKey"] ?? "";
+var r2SecretKey = r2Config["SecretKey"] ?? "";
+var r2Ready = Uri.TryCreate(r2ServiceUrl, UriKind.Absolute, out _)
+    && !r2ServiceUrl.Contains('<')
+    && !string.IsNullOrWhiteSpace(r2AccessKey)
+    && !string.IsNullOrWhiteSpace(r2SecretKey);
+
+if (r2Ready)
 {
-    ServiceURL = r2Config["ServiceUrl"] ?? throw new InvalidOperationException("R2:ServiceUrl not configured"),
-    ForcePathStyle = true
-};
-builder.Services.AddSingleton<IAmazonS3>(_ => new AmazonS3Client(r2Credentials, r2S3Config));
-builder.Services.AddSingleton<IFileStorageService, R2FileStorageService>();
+    var r2Credentials = new BasicAWSCredentials(r2AccessKey, r2SecretKey);
+    var r2S3Config = new AmazonS3Config { ServiceURL = r2ServiceUrl, ForcePathStyle = true };
+    builder.Services.AddSingleton<IAmazonS3>(_ => new AmazonS3Client(r2Credentials, r2S3Config));
+    builder.Services.AddSingleton<IFileStorageService, R2FileStorageService>();
+}
+else
+{
+    builder.Services.AddSingleton<IFileStorageService, LocalFileStorageService>();
+}
 builder.Services.AddSingleton<ImageProcessingService>();
 
 // In-memory cache for catalog dropdowns
@@ -145,7 +154,9 @@ app.UseStatusCodePagesWithReExecute("/Shared/Error{0}");
 app.UseRequestLocalization();
 
 app.UseResponseCompression();
-app.UseHttpsRedirection();
+// HTTPS редирект не нужен внутри контейнера — SSL терминируется на nginx
+if (!app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
@@ -154,5 +165,12 @@ app.UseAntiforgery();
 app.UseAuthorization();
 app.MapRazorPages();
 app.MapHealthChecks("/health");
+
+// Автоматически применяем pending миграции при старте
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await db.Database.MigrateAsync();
+}
 
 app.Run();

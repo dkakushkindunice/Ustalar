@@ -56,7 +56,9 @@
         "Шаг 3: curl http://localhost:80 — должен вернуть ответ от приложения через nginx",
         "Шаг 4: docker compose down && docker compose up -d — данные PostgreSQL должны сохраниться"
       ],
-      "dependencies": ["TASK-001"],
+      "dependencies": [
+        "TASK-001"
+      ],
       "status": "done"
     },
     {
@@ -76,7 +78,9 @@
         "Шаг 3: dotnet ef dbcontext info — должен вывести ApplicationDbContext без ошибок",
         "Шаг 4: Подключение к PostgreSQL из контейнера работает"
       ],
-      "dependencies": ["TASK-001"],
+      "dependencies": [
+        "TASK-001"
+      ],
       "status": "done"
     },
     {
@@ -96,7 +100,9 @@
         "Шаг 3: Проверить содержимое миграции — все таблицы и индексы присутствуют",
         "Шаг 4: dotnet ef database update — миграция применяется к PostgreSQL успешно"
       ],
-      "dependencies": ["TASK-003"],
+      "dependencies": [
+        "TASK-003"
+      ],
       "status": "done"
     },
     {
@@ -116,7 +122,9 @@
         "Шаг 3: SELECT count(*) FROM specializations — должно быть >= 8 записей",
         "Шаг 4: SELECT slug FROM specializations — все slug уникальны и в формате kebab-case"
       ],
-      "dependencies": ["TASK-004"],
+      "dependencies": [
+        "TASK-004"
+      ],
       "status": "done"
     },
     {
@@ -137,8 +145,11 @@
         "Шаг 3: После деплоя: curl https://ustalar.az/health — должен вернуть 200 OK",
         "Шаг 4: Сломать код намеренно — pipeline должен остановиться на стадии build/test"
       ],
-      "dependencies": ["TASK-001", "TASK-002"],
-      "status": "pending"
+      "dependencies": [
+        "TASK-001",
+        "TASK-002"
+      ],
+      "status": "done"
     },
     {
       "id": "TASK-007",
@@ -157,8 +168,10 @@
         "Шаг 3: Проверить SSL Labs: A или A+ рейтинг",
         "Шаг 4: curl -I https://ustalar.az/css/app.css — заголовок Content-Encoding: gzip"
       ],
-      "dependencies": ["TASK-002"],
-      "status": "pending"
+      "dependencies": [
+        "TASK-002"
+      ],
+      "status": "done"
     },
     {
       "id": "TASK-008",
@@ -178,7 +191,9 @@
         "Шаг 3: Тест Alpine.js: x-data директива работает на тестовом компоненте",
         "Шаг 4: CSS build в CI работает без ошибок"
       ],
-      "dependencies": ["TASK-001"],
+      "dependencies": [
+        "TASK-001"
+      ],
       "status": "done"
     },
     {
@@ -199,8 +214,10 @@
         "Шаг 3: IStringLocalizer[\"SomeKey\"] возвращает правильный перевод",
         "Шаг 4: Несуществующий ключ — возвращает сам ключ без исключения"
       ],
-      "dependencies": ["TASK-001"],
-      "status": "pending"
+      "dependencies": [
+        "TASK-001"
+      ],
+      "status": "done"
     },
     {
       "id": "TASK-010",
@@ -220,7 +237,9 @@
         "Шаг 3: DevTools → куки: Secure=true, HttpOnly=true, SameSite=Strict",
         "Шаг 4: Выход (POST /logout) → кука удаляется, /cabinet/ снова требует входа"
       ],
-      "dependencies": ["TASK-005"],
+      "dependencies": [
+        "TASK-005"
+      ],
       "status": "done"
     },
     {
@@ -240,7 +259,9 @@
         "Шаг 3: POST /admin/login с неверным паролем — ошибка, нет входа",
         "Шаг 4: Куки мастера не дают доступ к /admin/ (разные схемы)"
       ],
-      "dependencies": ["TASK-005"],
+      "dependencies": [
+        "TASK-005"
+      ],
       "status": "done"
     },
     {
@@ -261,7 +282,9 @@
         "Шаг 3: Отправить 3 отзыва за час — 3-й должен вернуть HTTP 429",
         "Шаг 4: После истечения периода rate limit — запрос снова проходит"
       ],
-      "dependencies": ["TASK-001"],
+      "dependencies": [
+        "TASK-001"
+      ],
       "status": "done"
     },
     {
@@ -282,8 +305,10 @@
         "Шаг 3: URL загруженного файла доступен через Cloudflare CDN",
         "Шаг 4: DeleteAsync удаляет файл из R2"
       ],
-      "dependencies": ["TASK-001"],
-      "status": "pending"
+      "dependencies": [
+        "TASK-001"
+      ],
+      "status": "done"
     },
     {
       "id": "TASK-014",
@@ -303,7 +328,9 @@
         "Шаг 3: Через 10 минут — expires_at < now, код считается истёкшим",
         "Шаг 4: Повторный запрос SMS — предыдущая запись помечается is_used=true"
       ],
-      "dependencies": ["TASK-001"],
+      "dependencies": [
+        "TASK-001"
+      ],
       "status": "done"
     },
     {
@@ -323,7 +350,9 @@
         "Шаг 3: curl http://localhost:8080/health — HTTP 503",
         "Шаг 4: Запустить postgres: docker compose start postgres — /health снова 200"
       ],
-      "dependencies": ["TASK-001"],
+      "dependencies": [
+        "TASK-001"
+      ],
       "status": "done"
     },
     {
@@ -344,7 +373,11 @@
         "Шаг 3: POST /register/step1 с невалидным номером (не +994) — ошибка валидации",
         "Шаг 4: POST /register/step1 4 раза с одного IP — 4-я попытка даёт HTTP 429"
       ],
-      "dependencies": ["TASK-014", "TASK-012", "TASK-005"],
+      "dependencies": [
+        "TASK-014",
+        "TASK-012",
+        "TASK-005"
+      ],
       "status": "done"
     },
     {
@@ -365,7 +398,9 @@
         "Шаг 3: Ввести код через 11 минут — ошибка 'Код истёк'",
         "Шаг 4: Повторно ввести использованный код — ошибка 'Код уже использован'"
       ],
-      "dependencies": ["TASK-016"],
+      "dependencies": [
+        "TASK-016"
+      ],
       "status": "done"
     },
     {
@@ -385,7 +420,10 @@
         "Шаг 3: SELECT * FROM masters WHERE phone = '...' — запись создана с корректными данными",
         "Шаг 4: Попытка регистрации с уже существующим телефоном → редирект на /cabinet/"
       ],
-      "dependencies": ["TASK-017", "TASK-010"],
+      "dependencies": [
+        "TASK-017",
+        "TASK-010"
+      ],
       "status": "done"
     },
     {
@@ -406,7 +444,9 @@
         "Шаг 3: GET /cabinet/ без авторизации — редирект на /register",
         "Шаг 4: Мастер со status=pending видит сообщение об ожидании модерации"
       ],
-      "dependencies": ["TASK-018"],
+      "dependencies": [
+        "TASK-018"
+      ],
       "status": "done"
     },
     {
@@ -428,8 +468,11 @@
         "Шаг 4: Загрузить PDF с расширением .jpg — ошибка 'Недопустимый тип файла'",
         "Шаг 5: Загрузить 21-е фото — ошибка 'Превышен лимит фото'"
       ],
-      "dependencies": ["TASK-013", "TASK-019"],
-      "status": "pending"
+      "dependencies": [
+        "TASK-013",
+        "TASK-019"
+      ],
+      "status": "done"
     },
     {
       "id": "TASK-021",
@@ -449,8 +492,10 @@
         "Шаг 3: Попытка удалить чужое фото (другой master_id) — HTTP 403",
         "Шаг 4: Файл удалён из R2 — URL фото больше не работает"
       ],
-      "dependencies": ["TASK-020"],
-      "status": "pending"
+      "dependencies": [
+        "TASK-020"
+      ],
+      "status": "done"
     },
     {
       "id": "TASK-022",
@@ -470,7 +515,10 @@
         "Шаг 3: DevTools Network — HTMX-запрос возвращает partial HTML (не полную страницу)",
         "Шаг 4: SELECT status FROM masters WHERE id IN (...)  — все отображаемые мастера active"
       ],
-      "dependencies": ["TASK-005", "TASK-008"],
+      "dependencies": [
+        "TASK-005",
+        "TASK-008"
+      ],
       "status": "done"
     },
     {
@@ -491,7 +539,9 @@
         "Шаг 3: GET /masters/invalid-city/ — HTTP 404",
         "Шаг 4: Хлебные крошки отображаются корректно на каждом уровне"
       ],
-      "dependencies": ["TASK-022"],
+      "dependencies": [
+        "TASK-022"
+      ],
       "status": "done"
     },
     {
@@ -512,7 +562,9 @@
         "Шаг 3: Профиль мастера со status=pending — HTTP 404",
         "Шаг 4: WhatsApp кнопка содержит корректный номер в формате wa.me/994..."
       ],
-      "dependencies": ["TASK-023"],
+      "dependencies": [
+        "TASK-023"
+      ],
       "status": "done"
     },
     {
@@ -533,7 +585,9 @@
         "Шаг 3: Просмотр источника страницы — весь контент присутствует в HTML (SSR)",
         "Шаг 4: Отключить JS в браузере — главная страница всё равно работает"
       ],
-      "dependencies": ["TASK-022"],
+      "dependencies": [
+        "TASK-022"
+      ],
       "status": "done"
     },
     {
@@ -554,8 +608,10 @@
         "Шаг 3: GET /robots.txt — Disallow: /admin/, Disallow: /cabinet/",
         "Шаг 4: Вставить URL профиля в Facebook debugger — отображается OG-превью"
       ],
-      "dependencies": ["TASK-025"],
-      "status": "pending"
+      "dependencies": [
+        "TASK-025"
+      ],
+      "status": "done"
     },
     {
       "id": "TASK-027",
@@ -575,7 +631,10 @@
         "Шаг 3: Отправить 3 отзыва за час с одного IP — 3-й возвращает HTTP 429",
         "Шаг 4: POST без AntiForgery токена — HTTP 400"
       ],
-      "dependencies": ["TASK-005", "TASK-012"],
+      "dependencies": [
+        "TASK-005",
+        "TASK-012"
+      ],
       "status": "done"
     },
     {
@@ -596,7 +655,10 @@
         "Шаг 3: Таблица показывает реальные данные из БД",
         "Шаг 4: Пагинация работает при > 20 мастеров"
       ],
-      "dependencies": ["TASK-011", "TASK-005"],
+      "dependencies": [
+        "TASK-011",
+        "TASK-005"
+      ],
       "status": "done"
     },
     {
@@ -618,7 +680,9 @@
         "Шаг 3: Одобрить отзыв → отзыв отображается на странице мастера",
         "Шаг 4: SELECT * FROM admin_action_logs ORDER BY created_at DESC — все действия записаны"
       ],
-      "dependencies": ["TASK-028"],
+      "dependencies": [
+        "TASK-028"
+      ],
       "status": "done"
     },
     {
@@ -638,8 +702,10 @@
         "Шаг 3: SELECT count(*) FROM sms_verifications WHERE expires_at < now — должно быть 0",
         "Шаг 4: Логи приложения содержат запись о запуске очистки"
       ],
-      "dependencies": ["TASK-016"],
-      "status": "pending"
+      "dependencies": [
+        "TASK-016"
+      ],
+      "status": "done"
     },
     {
       "id": "TASK-031",
@@ -659,8 +725,11 @@
         "Шаг 3: Старый файл удалён из R2",
         "Шаг 4: Загрузить файл неверного типа — ошибка валидации"
       ],
-      "dependencies": ["TASK-013", "TASK-019"],
-      "status": "pending"
+      "dependencies": [
+        "TASK-013",
+        "TASK-019"
+      ],
+      "status": "done"
     },
     {
       "id": "TASK-032",
@@ -679,8 +748,10 @@
         "Шаг 3: Профилировать запросы EF Core (EnableSensitiveDataLogging) — нет N+1",
         "Шаг 4: Нагрузочный тест: 100 одновременных запросов к /masters/ — время ответа < 500ms"
       ],
-      "dependencies": ["TASK-022"],
-      "status": "pending"
+      "dependencies": [
+        "TASK-022"
+      ],
+      "status": "done"
     },
     {
       "id": "TASK-033",
@@ -699,8 +770,10 @@
         "Шаг 3: DevTools Network — app.css с fingerprint имеет Cache-Control: max-age=31536000",
         "Шаг 4: Размер production CSS < 50KB (Tailwind purged)"
       ],
-      "dependencies": ["TASK-001"],
-      "status": "pending"
+      "dependencies": [
+        "TASK-001"
+      ],
+      "status": "done"
     },
     {
       "id": "TASK-034",
@@ -720,8 +793,12 @@
         "Шаг 3: Lighthouse audit главной страницы — Performance >= 80",
         "Шаг 4: Все img теги содержат непустой alt атрибут"
       ],
-      "dependencies": ["TASK-025", "TASK-026", "TASK-029"],
-      "status": "pending"
+      "dependencies": [
+        "TASK-025",
+        "TASK-026",
+        "TASK-029"
+      ],
+      "status": "done"
     }
   ]
 }
