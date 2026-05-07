@@ -25,3 +25,8 @@
 **Статус:** done
 **Summary:** Созданы docker-compose.yml (сервисы app/postgres/nginx с healthcheck и сетью ustalar-net), Ustalar/Dockerfile (многоэтапный build sdk:10.0→aspnet:10.0, curl для healthcheck), nginx/nginx.conf (reverse proxy на app:8080), .env.example, .gitignore.
 **Проблемы:** Docker CLI не в PATH (Docker Desktop установлен, но не запущен) — валидация `docker compose config` не выполнена, будет проверена при первом запуске.
+
+### [2026-05-07] TASK-003 — EF Core 10 + Npgsql + ApplicationDbContext
+**Статус:** done
+**Summary:** Добавлены пакеты Npgsql.EntityFrameworkCore.PostgreSQL 10.0.1 и Microsoft.EntityFrameworkCore.Design. Создан Data/ApplicationDbContext.cs. Program.cs обновлён с UseNpgsql(). appsettings.json содержит ConnectionStrings:Default. dotnet build: 0 ошибок. dotnet ef dbcontext info: Provider=Npgsql, Database=ustalar.
+**Проблемы:** Нет.
