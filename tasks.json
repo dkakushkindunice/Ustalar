@@ -1,0 +1,727 @@
+{
+  "agent_instructions": {
+    "before_start": [
+      "Прочитай этот файл и git log --oneline -20",
+      "Выбери ОДНУ задачу со статусом pending и наивысшим приоритетом",
+      "Проверь, что все dependencies этой задачи имеют статус done"
+    ],
+    "during_work": [
+      "Работай только над выбранной задачей",
+      "Делай коммиты после каждого логического изменения",
+      "Не трогай код, не связанный с текущей задачей"
+    ],
+    "before_finish": [
+      "Выполни ВСЕ test_steps из задачи",
+      "Меняй status на done ТОЛЬКО после успешного прохождения всех тестов",
+      "Напиши summary в progress.md",
+      "ЗАПРЕЩЕНО удалять или редактировать задачи — только менять status"
+    ]
+  },
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "category": "infrastructure",
+      "priority": "critical",
+      "description": "Создать ASP.NET Core 10 Razor Pages проект со структурой папок",
+      "acceptance_criteria": [
+        "Проект создан на .NET 10 LTS (не .NET 8/9)",
+        "Структура: Pages/, Models/, Services/, Data/, Resources/, wwwroot/",
+        "Файл Program.cs с базовой конфигурацией middleware",
+        "Проект собирается без ошибок: dotnet build"
+      ],
+      "test_steps": [
+        "Шаг 1: dotnet new webapp -n Ustalar --framework net10.0",
+        "Шаг 2: Проверить файл .csproj — должен быть <TargetFramework>net10.0</TargetFramework>",
+        "Шаг 3: dotnet build — должен завершиться успешно без ошибок",
+        "Шаг 4: dotnet run — приложение должно запуститься на localhost:5000"
+      ],
+      "dependencies": [],
+      "status": "done"
+    },
+    {
+      "id": "TASK-002",
+      "category": "infrastructure",
+      "priority": "critical",
+      "description": "Настроить Docker Compose с сервисами app, postgres:17.9-alpine, nginx:1.27-alpine",
+      "acceptance_criteria": [
+        "docker-compose.yml содержит сервисы app, postgres, nginx",
+        "postgres использует образ postgres:17.9-alpine с healthcheck",
+        "app зависит от postgres через condition: service_healthy",
+        "nginx проксирует запросы на app:8080",
+        "Том pgdata для персистентности данных PostgreSQL"
+      ],
+      "test_steps": [
+        "Шаг 1: docker compose up -d — все контейнеры должны запуститься",
+        "Шаг 2: docker compose ps — все сервисы должны быть healthy",
+        "Шаг 3: curl http://localhost:80 — должен вернуть ответ от приложения через nginx",
+        "Шаг 4: docker compose down && docker compose up -d — данные PostgreSQL должны сохраниться"
+      ],
+      "dependencies": ["TASK-001"],
+      "status": "done"
+    },
+    {
+      "id": "TASK-003",
+      "category": "infrastructure",
+      "priority": "critical",
+      "description": "Настроить EF Core 10 с Npgsql и создать ApplicationDbContext",
+      "acceptance_criteria": [
+        "Пакеты: Microsoft.EntityFrameworkCore 10.0.4, Npgsql.EntityFrameworkCore.PostgreSQL 10.0.1",
+        "ApplicationDbContext зарегистрирован в DI",
+        "Connection string читается из appsettings.json и переменных среды",
+        "dotnet ef dbcontext info — выводит информацию о контексте"
+      ],
+      "test_steps": [
+        "Шаг 1: dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL --version 10.0.1",
+        "Шаг 2: dotnet add package Microsoft.EntityFrameworkCore.Design",
+        "Шаг 3: dotnet ef dbcontext info — должен вывести ApplicationDbContext без ошибок",
+        "Шаг 4: Подключение к PostgreSQL из контейнера работает"
+      ],
+      "dependencies": ["TASK-001"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-004",
+      "category": "infrastructure",
+      "priority": "critical",
+      "description": "Создать все EF Core entity-модели согласно схеме данных проекта",
+      "acceptance_criteria": [
+        "Созданы классы: Master, City, Specialization, MasterSpecialization, PortfolioPhoto, Review, SmsVerification, AdminUser, AdminActionLog",
+        "Master: id, full_name, phone(unique), whatsapp, about, experience_years, price_from, price_to, avatar_url, status, is_verified, city_id(FK), created_at, updated_at",
+        "Все FK-связи настроены через Fluent API в OnModelCreating",
+        "Обязательные индексы: {CityId,Status}, {Status}, Phone(unique), {MasterId,IsApproved} для фото и отзывов"
+      ],
+      "test_steps": [
+        "Шаг 1: dotnet build — все модели компилируются без ошибок",
+        "Шаг 2: dotnet ef migrations add InitialCreate — миграция создаётся без ошибок",
+        "Шаг 3: Проверить содержимое миграции — все таблицы и индексы присутствуют",
+        "Шаг 4: dotnet ef database update — миграция применяется к PostgreSQL успешно"
+      ],
+      "dependencies": ["TASK-003"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-005",
+      "category": "infrastructure",
+      "priority": "critical",
+      "description": "Применить начальные миграции и создать seed-данные: города и специализации",
+      "acceptance_criteria": [
+        "Миграция применена к PostgreSQL 17",
+        "В таблице Cities: Баку, Гянджа, Сумгайыт, Лянкяран и другие основные города AZ с slug",
+        "В таблице Specializations: электрик, сантехник, маляр, плотник, сварщик и другие с slug, name_az, name_ru",
+        "Seed выполняется через HasData() или отдельный сервис инициализации"
+      ],
+      "test_steps": [
+        "Шаг 1: dotnet ef database update — все миграции применены",
+        "Шаг 2: SELECT count(*) FROM cities — должно быть >= 5 записей",
+        "Шаг 3: SELECT count(*) FROM specializations — должно быть >= 8 записей",
+        "Шаг 4: SELECT slug FROM specializations — все slug уникальны и в формате kebab-case"
+      ],
+      "dependencies": ["TASK-004"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-006",
+      "category": "infrastructure",
+      "priority": "high",
+      "description": "Настроить GitLab CI/CD: стадии build, test, deploy с SSH и healthcheck",
+      "acceptance_criteria": [
+        ".gitlab-ci.yml содержит стадии: build, test, deploy",
+        "Деплой только из ветки main",
+        "После деплоя выполняется healthcheck GET /health",
+        "При неудаче healthcheck — автоматический rollback к предыдущему образу",
+        "Docker image пушится в GitLab Container Registry"
+      ],
+      "test_steps": [
+        "Шаг 1: Запустить pipeline из ветки main — все стадии должны пройти зелёным",
+        "Шаг 2: Сделать коммит в не-main ветку — deploy стадия должна быть пропущена",
+        "Шаг 3: После деплоя: curl https://ustalar.az/health — должен вернуть 200 OK",
+        "Шаг 4: Сломать код намеренно — pipeline должен остановиться на стадии build/test"
+      ],
+      "dependencies": ["TASK-001", "TASK-002"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-007",
+      "category": "infrastructure",
+      "priority": "high",
+      "description": "Настроить Nginx reverse proxy с SSL через Let's Encrypt (Certbot)",
+      "acceptance_criteria": [
+        "Nginx проксирует HTTP→HTTPS (редирект 301)",
+        "SSL-сертификат от Let's Encrypt получен и автообновляется",
+        "nginx.conf содержит gzip compression и security headers",
+        "Статические файлы из wwwroot отдаются напрямую через Nginx без проксирования"
+      ],
+      "test_steps": [
+        "Шаг 1: curl -I https://ustalar.az — статус 200, заголовок strict-transport-security присутствует",
+        "Шаг 2: curl -I http://ustalar.az — статус 301 redirect на https://",
+        "Шаг 3: Проверить SSL Labs: A или A+ рейтинг",
+        "Шаг 4: curl -I https://ustalar.az/css/app.css — заголовок Content-Encoding: gzip"
+      ],
+      "dependencies": ["TASK-002"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-008",
+      "category": "infrastructure",
+      "priority": "high",
+      "description": "Подключить Tailwind CSS v4, HTMX 2.0, Alpine.js 3.14, GLightbox в layout",
+      "acceptance_criteria": [
+        "Tailwind v4 настроен через CSS @theme (не tailwind.config.js)",
+        "HTMX 2.0.x подключён через CDN или npm в _Layout.cshtml",
+        "Alpine.js 3.14.x подключён в _Layout.cshtml",
+        "GLightbox 3.3.x подключён для галерей",
+        "CSS собирается командой: npx @tailwindcss/cli -i input.css -o wwwroot/css/app.css"
+      ],
+      "test_steps": [
+        "Шаг 1: Открыть страницу в браузере — Tailwind-классы применяются",
+        "Шаг 2: В DevTools Network — HTMX делает AJAX-запросы без перезагрузки страницы",
+        "Шаг 3: Тест Alpine.js: x-data директива работает на тестовом компоненте",
+        "Шаг 4: CSS build в CI работает без ошибок"
+      ],
+      "dependencies": ["TASK-001"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-009",
+      "category": "infrastructure",
+      "priority": "high",
+      "description": "Настроить ASP.NET Core Localization для AZ/RU с .resx файлами",
+      "acceptance_criteria": [
+        "AddLocalization() и UseRequestLocalization() настроены в Program.cs",
+        "Структура Resources/Pages/ и Resources/Shared/ создана",
+        "Языки переключаются через ?culture=az или ?culture=ru",
+        "Создан базовый набор .resx ключей: Common.az.resx, Common.ru.resx",
+        "Дефолтная культура: az-AZ"
+      ],
+      "test_steps": [
+        "Шаг 1: GET /?culture=ru — страница рендерится на русском",
+        "Шаг 2: GET /?culture=az — страница рендерится на азербайджанском",
+        "Шаг 3: IStringLocalizer[\"SomeKey\"] возвращает правильный перевод",
+        "Шаг 4: Несуществующий ключ — возвращает сам ключ без исключения"
+      ],
+      "dependencies": ["TASK-001"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-010",
+      "category": "security",
+      "priority": "critical",
+      "description": "Настроить Cookie Auth для мастеров (ASP.NET Core Identity)",
+      "acceptance_criteria": [
+        "AddAuthentication().AddCookie() настроен в Program.cs",
+        "Логин по номеру телефона (не email) через SignInAsync()",
+        "Защищённые маршруты /cabinet/** требуют [Authorize]",
+        "Неавторизованный доступ → редирект на /register",
+        "Куки HttpOnly, Secure, SameSite=Strict"
+      ],
+      "test_steps": [
+        "Шаг 1: GET /cabinet/ без куки — редирект 302 на /register",
+        "Шаг 2: После входа GET /cabinet/ — страница отображается (200 OK)",
+        "Шаг 3: DevTools → куки: Secure=true, HttpOnly=true, SameSite=Strict",
+        "Шаг 4: Выход (POST /logout) → кука удаляется, /cabinet/ снова требует входа"
+      ],
+      "dependencies": ["TASK-005"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-011",
+      "category": "security",
+      "priority": "critical",
+      "description": "Настроить отдельную Cookie Auth для AdminUsers с policy-based авторизацией",
+      "acceptance_criteria": [
+        "Отдельная схема аутентификации AdminCookies для /admin/** маршрутов",
+        "AdminUsers хранятся в таблице admin_users с password_hash (bcrypt)",
+        "Все /admin/** страницы защищены [Authorize(Policy = \"AdminOnly\")]",
+        "Форма входа: POST /admin/login с AntiForgery токеном"
+      ],
+      "test_steps": [
+        "Шаг 1: GET /admin/ без авторизации — редирект на /admin/login",
+        "Шаг 2: POST /admin/login с верными данными — вход и редирект на /admin/",
+        "Шаг 3: POST /admin/login с неверным паролем — ошибка, нет входа",
+        "Шаг 4: Куки мастера не дают доступ к /admin/ (разные схемы)"
+      ],
+      "dependencies": ["TASK-005"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-012",
+      "category": "security",
+      "priority": "critical",
+      "description": "Настроить AntiForgery middleware и Rate Limiting для SMS и форм отзывов",
+      "acceptance_criteria": [
+        "UseAntiforgery() включён в pipeline",
+        "Rate limiting: не более 3 SMS-запросов в 10 минут с одного IP",
+        "Rate limiting: не более 2 отзывов в час с одного IP",
+        "При превышении лимита — HTTP 429 Too Many Requests",
+        "AntiForgery токен проверяется на всех POST-запросах"
+      ],
+      "test_steps": [
+        "Шаг 1: POST /register/step1 без AntiForgery токена — HTTP 400",
+        "Шаг 2: Отправить 4 SMS-запроса подряд — 4-й должен вернуть HTTP 429",
+        "Шаг 3: Отправить 3 отзыва за час — 3-й должен вернуть HTTP 429",
+        "Шаг 4: После истечения периода rate limit — запрос снова проходит"
+      ],
+      "dependencies": ["TASK-001"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-013",
+      "category": "infrastructure",
+      "priority": "high",
+      "description": "Настроить сервис загрузки файлов в Cloudflare R2 (AWSSDK.S3)",
+      "acceptance_criteria": [
+        "Пакет AWSSDK.S3 добавлен и настроен для R2 endpoint",
+        "IFileStorageService с методами UploadAsync(stream, fileName) и DeleteAsync(key)",
+        "Имена файлов: GUID + расширение (не оригинальное имя файла)",
+        "Проверка MIME-типа файла по содержимому (не по расширению)",
+        "Допустимые типы: image/jpeg, image/png, image/webp"
+      ],
+      "test_steps": [
+        "Шаг 1: Загрузить JPEG — файл появляется в R2 с GUID-именем",
+        "Шаг 2: Загрузить файл с расширением .jpg но содержимым PDF — должен быть отклонён",
+        "Шаг 3: URL загруженного файла доступен через Cloudflare CDN",
+        "Шаг 4: DeleteAsync удаляет файл из R2"
+      ],
+      "dependencies": ["TASK-001"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-014",
+      "category": "integration",
+      "priority": "high",
+      "description": "Настроить Twilio SMS сервис для отправки кодов верификации",
+      "acceptance_criteria": [
+        "Пакет Twilio добавлен, конфигурация через appsettings (AccountSid, AuthToken, FromNumber)",
+        "ISmsService с методом SendVerificationCodeAsync(phone, code)",
+        "6-значный код генерируется криптографически случайно",
+        "Код сохраняется в SmsVerifications с expires_at = now + 10 минут",
+        "Повторная отправка инвалидирует предыдущий код для этого номера"
+      ],
+      "test_steps": [
+        "Шаг 1: Вызвать SendVerificationCodeAsync — SMS доходит на реальный номер",
+        "Шаг 2: SELECT * FROM sms_verifications WHERE phone = '+994...' — запись создана с is_used=false",
+        "Шаг 3: Через 10 минут — expires_at < now, код считается истёкшим",
+        "Шаг 4: Повторный запрос SMS — предыдущая запись помечается is_used=true"
+      ],
+      "dependencies": ["TASK-001"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-015",
+      "category": "infrastructure",
+      "priority": "high",
+      "description": "Health check endpoint GET /health для мониторинга и CI/CD",
+      "acceptance_criteria": [
+        "AddHealthChecks() с проверкой подключения к PostgreSQL",
+        "GET /health → 200 OK + JSON {status: 'Healthy', db: 'ok'}",
+        "При недоступной БД → 503 Service Unavailable",
+        "Endpoint не требует авторизации"
+      ],
+      "test_steps": [
+        "Шаг 1: curl http://localhost:8080/health — HTTP 200, тело содержит 'Healthy'",
+        "Шаг 2: Остановить postgres: docker compose stop postgres",
+        "Шаг 3: curl http://localhost:8080/health — HTTP 503",
+        "Шаг 4: Запустить postgres: docker compose start postgres — /health снова 200"
+      ],
+      "dependencies": ["TASK-001"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-016",
+      "category": "functional",
+      "priority": "critical",
+      "description": "Регистрация мастера: Шаг 1 — форма ввода телефона и отправка SMS-кода",
+      "acceptance_criteria": [
+        "GET /register — форма с полем телефона (формат +994XXXXXXXXX)",
+        "POST /register/step1 — валидация формата, отправка SMS, сохранение в SmsVerifications",
+        "Если мастер уже существует с этим телефоном → редирект на /cabinet/",
+        "AntiForgery токен на форме",
+        "Rate limiting: 3 попытки в 10 минут"
+      ],
+      "test_steps": [
+        "Шаг 1: GET /register — страница отображается с формой телефона",
+        "Шаг 2: POST /register/step1 с валидным номером — SMS отправлен, редирект на /register/step2",
+        "Шаг 3: POST /register/step1 с невалидным номером (не +994) — ошибка валидации",
+        "Шаг 4: POST /register/step1 4 раза с одного IP — 4-я попытка даёт HTTP 429"
+      ],
+      "dependencies": ["TASK-014", "TASK-012", "TASK-005"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-017",
+      "category": "functional",
+      "priority": "critical",
+      "description": "Регистрация мастера: Шаг 2 — ввод и верификация SMS-кода",
+      "acceptance_criteria": [
+        "GET /register/step2 — форма ввода 6-значного кода",
+        "POST /register/step2 — проверка кода по таблице SmsVerifications",
+        "Истёкший код (> 10 минут) → ошибка 'Код истёк, запросите новый'",
+        "Использованный код → ошибка 'Код уже использован'",
+        "Успешная верификация → код помечается is_used=true, редирект на /register/step3"
+      ],
+      "test_steps": [
+        "Шаг 1: Ввести правильный код — редирект на /register/step3",
+        "Шаг 2: Ввести неправильный код — сообщение об ошибке, форма остаётся",
+        "Шаг 3: Ввести код через 11 минут — ошибка 'Код истёк'",
+        "Шаг 4: Повторно ввести использованный код — ошибка 'Код уже использован'"
+      ],
+      "dependencies": ["TASK-016"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-018",
+      "category": "functional",
+      "priority": "critical",
+      "description": "Регистрация мастера: Шаг 3 — создание профиля и вход в систему",
+      "acceptance_criteria": [
+        "GET /register/step3 — форма: full_name, city (выпадающий список), specializations (мультивыбор), about, experience_years, price_from, price_to, whatsapp",
+        "POST /register/step3 — создание Master в БД со status=pending, is_verified=false",
+        "После создания — автоматический вход через Cookie Auth (SignInAsync)",
+        "Валидация: full_name обязателен, city_id валиден, хотя бы одна специализация"
+      ],
+      "test_steps": [
+        "Шаг 1: Заполнить форму и отправить — мастер создан в БД со status=pending",
+        "Шаг 2: После регистрации — редирект на /cabinet/ (пользователь вошёл)",
+        "Шаг 3: SELECT * FROM masters WHERE phone = '...' — запись создана с корректными данными",
+        "Шаг 4: Попытка регистрации с уже существующим телефоном → редирект на /cabinet/"
+      ],
+      "dependencies": ["TASK-017", "TASK-010"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-019",
+      "category": "functional",
+      "priority": "high",
+      "description": "Личный кабинет мастера: просмотр и редактирование профиля",
+      "acceptance_criteria": [
+        "GET /cabinet/ — отображает профиль мастера (статус, специализации, фото, город)",
+        "GET /cabinet/edit — форма редактирования: about, whatsapp, experience_years, price_from, price_to",
+        "POST /cabinet/edit — сохранение изменений, обновление updated_at",
+        "Нельзя изменить телефон и city через кабинет",
+        "Статус 'На модерации' (pending) отображается с пояснением"
+      ],
+      "test_steps": [
+        "Шаг 1: GET /cabinet/ — все поля профиля отображаются",
+        "Шаг 2: Изменить 'about' и сохранить — изменение отразилось в БД",
+        "Шаг 3: GET /cabinet/ без авторизации — редирект на /register",
+        "Шаг 4: Мастер со status=pending видит сообщение об ожидании модерации"
+      ],
+      "dependencies": ["TASK-018"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-020",
+      "category": "functional",
+      "priority": "high",
+      "description": "Загрузка фото портфолио: обработка ImageSharp, сохранение в R2",
+      "acceptance_criteria": [
+        "POST /cabinet/photos/upload — принимает изображение (JPEG/PNG/WebP, макс. 10MB)",
+        "ImageSharp создаёт thumbnail 400x300px в формате WebP",
+        "Оригинал и thumbnail загружаются в R2 с GUID-именами",
+        "PortfolioPhoto запись создаётся в БД с is_approved=false",
+        "Максимум 20 фото на одного мастера"
+      ],
+      "test_steps": [
+        "Шаг 1: Загрузить JPEG 5MB — файл и thumbnail появляются в R2",
+        "Шаг 2: SELECT * FROM portfolio_photos WHERE master_id = X — запись с is_approved=false",
+        "Шаг 3: Загрузить файл > 10MB — ошибка валидации",
+        "Шаг 4: Загрузить PDF с расширением .jpg — ошибка 'Недопустимый тип файла'",
+        "Шаг 5: Загрузить 21-е фото — ошибка 'Превышен лимит фото'"
+      ],
+      "dependencies": ["TASK-013", "TASK-019"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-021",
+      "category": "functional",
+      "priority": "medium",
+      "description": "Управление портфолио в кабинете: список фото, удаление",
+      "acceptance_criteria": [
+        "GET /cabinet/ — секция портфолио показывает все фото (approved и pending)",
+        "Pending фото помечены визуально 'Ожидает одобрения'",
+        "DELETE /cabinet/photos/{id} — удаление фото из R2 и БД",
+        "HTMX: удаление без перезагрузки страницы",
+        "Мастер может удалять только свои фото (проверка owner)"
+      ],
+      "test_steps": [
+        "Шаг 1: Загрузить фото — оно отображается в секции портфолио кабинета",
+        "Шаг 2: Нажать 'Удалить' — фото исчезает без перезагрузки (HTMX hx-delete)",
+        "Шаг 3: Попытка удалить чужое фото (другой master_id) — HTTP 403",
+        "Шаг 4: Файл удалён из R2 — URL фото больше не работает"
+      ],
+      "dependencies": ["TASK-020"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-022",
+      "category": "functional",
+      "priority": "critical",
+      "description": "Каталог мастеров GET /masters/ с пагинацией и HTMX-фильтрацией",
+      "acceptance_criteria": [
+        "Отображаются только мастера со status=active",
+        "Карточка мастера: фото, имя, специализации, город, рейтинг, цена от/до",
+        "Пагинация: 12 мастеров на страницу через .Skip().Take() с AsNoTracking()",
+        "HTMX: смена страницы и фильтров без перезагрузки (hx-get + hx-target)",
+        "Partial view _MastersList возвращается при HTMX-запросах"
+      ],
+      "test_steps": [
+        "Шаг 1: GET /masters/ — список мастеров отображается (только active)",
+        "Шаг 2: Нажать страницу 2 — HTMX загружает новый список без перезагрузки",
+        "Шаг 3: DevTools Network — HTMX-запрос возвращает partial HTML (не полную страницу)",
+        "Шаг 4: SELECT status FROM masters WHERE id IN (...)  — все отображаемые мастера active"
+      ],
+      "dependencies": ["TASK-005", "TASK-008"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-023",
+      "category": "functional",
+      "priority": "critical",
+      "description": "URL-роутинг каталога по городу и специализации для SEO",
+      "acceptance_criteria": [
+        "GET /masters/{city-slug}/ — фильтр по городу (например /masters/baku/)",
+        "GET /masters/{city-slug}/{spec-slug}/ — фильтр по городу + специализации",
+        "404 при несуществующем slug города или специализации",
+        "Хлебные крошки: Мастера → Баку → Электрики",
+        "Canonical URL в <head> для каждой страницы"
+      ],
+      "test_steps": [
+        "Шаг 1: GET /masters/baku/ — мастера только из Баку",
+        "Шаг 2: GET /masters/baku/elektrik/ — мастера-электрики из Баку",
+        "Шаг 3: GET /masters/invalid-city/ — HTTP 404",
+        "Шаг 4: Хлебные крошки отображаются корректно на каждом уровне"
+      ],
+      "dependencies": ["TASK-022"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-024",
+      "category": "functional",
+      "priority": "critical",
+      "description": "Страница профиля мастера GET /masters/{city}/{spec}/{name}",
+      "acceptance_criteria": [
+        "Отображаются: имя, фото, специализации, город, about, опыт, цена, WhatsApp-кнопка",
+        "Галерея портфолио из одобренных фото (is_approved=true) через GLightbox",
+        "Список одобренных отзывов (is_approved=true) с рейтингом",
+        "Форма добавления отзыва",
+        "Страница недоступна (404) для мастеров со status != active"
+      ],
+      "test_steps": [
+        "Шаг 1: GET /masters/baku/elektrik/ali-mammadov — профиль отображается",
+        "Шаг 2: Нажать на фото в портфолио — GLightbox открывает галерею",
+        "Шаг 3: Профиль мастера со status=pending — HTTP 404",
+        "Шаг 4: WhatsApp кнопка содержит корректный номер в формате wa.me/994..."
+      ],
+      "dependencies": ["TASK-023"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-025",
+      "category": "ui",
+      "priority": "high",
+      "description": "Главная страница: герой-блок, популярные специализации, избранные мастера",
+      "acceptance_criteria": [
+        "Герой-блок с поиском по специализации и городу (редирект на каталог)",
+        "Секция популярных специализаций (8 штук) с иконками",
+        "Секция 'Проверенные мастера' — 6 случайных active+is_verified мастеров",
+        "Мета-теги title, description для главной страницы",
+        "Страница полностью отрендерена на сервере (SSR, без JavaScript для контента)"
+      ],
+      "test_steps": [
+        "Шаг 1: GET / — главная страница загружается < 2 секунд",
+        "Шаг 2: Поиск по специализации 'электрик' → редирект на /masters/?spec=elektrik",
+        "Шаг 3: Просмотр источника страницы — весь контент присутствует в HTML (SSR)",
+        "Шаг 4: Отключить JS в браузере — главная страница всё равно работает"
+      ],
+      "dependencies": ["TASK-022"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-026",
+      "category": "ui",
+      "priority": "high",
+      "description": "SEO: мета-теги, hreflang AZ/RU, sitemap.xml, robots.txt",
+      "acceptance_criteria": [
+        "Каждая страница имеет уникальные <title> и <meta name='description'>",
+        "hreflang для AZ и RU версий на всех страницах каталога",
+        "GET /sitemap.xml — динамический sitemap с активными мастерами и категориями",
+        "GET /robots.txt — запрещает индексацию /admin/ и /cabinet/",
+        "Open Graph теги для шаринга профилей в социальных сетях"
+      ],
+      "test_steps": [
+        "Шаг 1: Просмотр источника /masters/baku/ — присутствуют hreflang az и ru",
+        "Шаг 2: GET /sitemap.xml — валидный XML, содержит URL активных мастеров",
+        "Шаг 3: GET /robots.txt — Disallow: /admin/, Disallow: /cabinet/",
+        "Шаг 4: Вставить URL профиля в Facebook debugger — отображается OG-превью"
+      ],
+      "dependencies": ["TASK-025"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-027",
+      "category": "functional",
+      "priority": "high",
+      "description": "Система отзывов: форма добавления, сохранение, ожидание модерации",
+      "acceptance_criteria": [
+        "POST /reviews/{masterId} — форма: reviewer_name, reviewer_phone, rating (1-5 звёзд), text",
+        "Отзыв создаётся с is_approved=false (ожидает модерации)",
+        "Rate limiting: 2 отзыва в час с одного IP",
+        "AntiForgery токен обязателен",
+        "После отправки — сообщение 'Отзыв отправлен на модерацию'"
+      ],
+      "test_steps": [
+        "Шаг 1: Отправить отзыв — запись в БД с is_approved=false",
+        "Шаг 2: Отзыв не отображается на странице мастера до одобрения администратором",
+        "Шаг 3: Отправить 3 отзыва за час с одного IP — 3-й возвращает HTTP 429",
+        "Шаг 4: POST без AntiForgery токена — HTTP 400"
+      ],
+      "dependencies": ["TASK-005", "TASK-012"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-028",
+      "category": "functional",
+      "priority": "high",
+      "description": "Административная панель: список мастеров с фильтрами по статусу",
+      "acceptance_criteria": [
+        "GET /admin/ — таблица мастеров с колонками: имя, телефон, город, статус, дата регистрации",
+        "Фильтр по статусу: pending / active / blocked",
+        "Пагинация: 20 записей на страницу",
+        "Ссылка на профиль мастера для просмотра деталей",
+        "Требует [Authorize(Policy = 'AdminOnly')]"
+      ],
+      "test_steps": [
+        "Шаг 1: GET /admin/ без авторизации — редирект на /admin/login",
+        "Шаг 2: GET /admin/?status=pending — только мастера на модерации",
+        "Шаг 3: Таблица показывает реальные данные из БД",
+        "Шаг 4: Пагинация работает при > 20 мастеров"
+      ],
+      "dependencies": ["TASK-011", "TASK-005"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-029",
+      "category": "functional",
+      "priority": "high",
+      "description": "Административные действия: одобрение/блокировка мастеров и отзывов",
+      "acceptance_criteria": [
+        "POST /admin/masters/{id}/approve — статус меняется pending→active",
+        "POST /admin/masters/{id}/block — статус меняется active→blocked",
+        "POST /admin/reviews/{id}/approve — is_approved=true",
+        "POST /admin/reviews/{id}/reject — удаление записи из БД",
+        "POST /admin/photos/{id}/approve — is_approved=true для фото",
+        "Все действия логируются в AdminActionLogs"
+      ],
+      "test_steps": [
+        "Шаг 1: Одобрить мастера → status=active, мастер появляется в каталоге",
+        "Шаг 2: Заблокировать мастера → status=blocked, профиль возвращает 404",
+        "Шаг 3: Одобрить отзыв → отзыв отображается на странице мастера",
+        "Шаг 4: SELECT * FROM admin_action_logs ORDER BY created_at DESC — все действия записаны"
+      ],
+      "dependencies": ["TASK-028"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-030",
+      "category": "functional",
+      "priority": "medium",
+      "description": "BackgroundService: очистка устаревших SMS-кодов",
+      "acceptance_criteria": [
+        "SmsCleanupService наследует BackgroundService",
+        "Запускается каждые 30 минут",
+        "Удаляет записи SmsVerifications где expires_at < now OR is_used = true AND created_at < now - 24h",
+        "Ошибки логируются через ILogger, сервис не крашит приложение"
+      ],
+      "test_steps": [
+        "Шаг 1: Создать устаревший SMS-код (expires_at в прошлом)",
+        "Шаг 2: Подождать 30 минут (или вызвать ExecuteAsync напрямую в тесте)",
+        "Шаг 3: SELECT count(*) FROM sms_verifications WHERE expires_at < now — должно быть 0",
+        "Шаг 4: Логи приложения содержат запись о запуске очистки"
+      ],
+      "dependencies": ["TASK-016"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-031",
+      "category": "functional",
+      "priority": "medium",
+      "description": "Аватар мастера: загрузка и обрезка через ImageSharp в кабинете",
+      "acceptance_criteria": [
+        "POST /cabinet/avatar — загрузка аватара",
+        "ImageSharp обрезает до квадрата 300x300px, сохраняет в WebP",
+        "Старый аватар удаляется из R2 при обновлении",
+        "Master.avatar_url обновляется в БД",
+        "Допустимые типы: image/jpeg, image/png, image/webp"
+      ],
+      "test_steps": [
+        "Шаг 1: Загрузить прямоугольное фото — аватар обрезан до квадрата 300x300",
+        "Шаг 2: Новый аватар отображается в кабинете и профиле",
+        "Шаг 3: Старый файл удалён из R2",
+        "Шаг 4: Загрузить файл неверного типа — ошибка валидации"
+      ],
+      "dependencies": ["TASK-013", "TASK-019"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-032",
+      "category": "functional",
+      "priority": "medium",
+      "description": "Кеширование справочников (города, специализации) через IMemoryCache",
+      "acceptance_criteria": [
+        "Cities и Specializations кешируются при первом запросе на 1 час",
+        "Кеш инвалидируется при добавлении новой записи в /admin",
+        "AsNoTracking() используется во всех read-only запросах каталога",
+        "В логах нет повторных запросов к БД за городами/специализациями при повторных запросах"
+      ],
+      "test_steps": [
+        "Шаг 1: GET /masters/ дважды — второй запрос не делает SQL-запрос к cities/specializations",
+        "Шаг 2: Добавить новый город через /admin — он появляется в выпадающем списке (кеш сброшен)",
+        "Шаг 3: Профилировать запросы EF Core (EnableSensitiveDataLogging) — нет N+1",
+        "Шаг 4: Нагрузочный тест: 100 одновременных запросов к /masters/ — время ответа < 500ms"
+      ],
+      "dependencies": ["TASK-022"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-033",
+      "category": "infrastructure",
+      "priority": "medium",
+      "description": "Response compression (gzip/brotli) и production-оптимизации",
+      "acceptance_criteria": [
+        "AddResponseCompression() с провайдерами brotli и gzip",
+        "Статические файлы имеют Cache-Control с длительным сроком (1 год для файлов с хешем)",
+        "CSS/JS собираются в production-режиме (минификация)",
+        "Tailwind CSS purge удаляет неиспользуемые классы в production"
+      ],
+      "test_steps": [
+        "Шаг 1: curl -H 'Accept-Encoding: br' https://ustalar.az/ — заголовок Content-Encoding: br",
+        "Шаг 2: curl -H 'Accept-Encoding: gzip' https://ustalar.az/ — Content-Encoding: gzip",
+        "Шаг 3: DevTools Network — app.css с fingerprint имеет Cache-Control: max-age=31536000",
+        "Шаг 4: Размер production CSS < 50KB (Tailwind purged)"
+      ],
+      "dependencies": ["TASK-001"],
+      "status": "pending"
+    },
+    {
+      "id": "TASK-034",
+      "category": "ui",
+      "priority": "low",
+      "description": "Финальная полировка: мобильная адаптация, доступность, 404/500 страницы",
+      "acceptance_criteria": [
+        "Все страницы адаптивны на мобильных (320px-768px)",
+        "Кастомные страницы ошибок: 404.cshtml, 500.cshtml",
+        "Alt-тексты на всех изображениях",
+        "Форма входа в /admin работает с touch-клавиатурой на мобильных",
+        "Lighthouse Mobile Score >= 80 на главной странице"
+      ],
+      "test_steps": [
+        "Шаг 1: DevTools Device Toolbar — iPhone 12 (390px) — контент не обрезается",
+        "Шаг 2: GET /nonexistent-page — кастомная 404 страница",
+        "Шаг 3: Lighthouse audit главной страницы — Performance >= 80",
+        "Шаг 4: Все img теги содержат непустой alt атрибут"
+      ],
+      "dependencies": ["TASK-025", "TASK-026", "TASK-029"],
+      "status": "pending"
+    }
+  ]
+}

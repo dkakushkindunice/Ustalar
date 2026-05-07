@@ -1,0 +1,43 @@
+# .NET
+**/bin/
+**/obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]uild/
+bld/
+
+# Visual Studio
+.vs/
+*.swp
+*~.nib
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Secrets
+.env
+!.env.example
+appsettings.*.local.json
+
+# Docker
+nginx/certs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
