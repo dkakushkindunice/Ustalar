@@ -36,6 +36,19 @@
 **Summary:** Program.cs обновлён: UseAntiforgery() добавлен в pipeline. AddRateLimiter() с двумя политиками: "sms" (3 req / 10 мин по IP) и "reviews" (2 req / час по IP), RejectionStatusCode=429. Создан Services/RateLimitPolicies.cs с константами. dotnet build: 0 ошибок.
 **Проблемы:** Была взята раньше TASK-005 — ошибка приоритизации (TASK-005 разблокирует цепочку TASK-010/011/016).
 
+### [2026-05-07] TASK-016 — Регистрация Шаг 1: телефон + SMS
+**Статус:** done
+**Summary:** Pages/Register/Index.cshtml — форма с телефоном (+994 валидация regex). POST /register: если мастер уже есть — SignInAsync → /cabinet, иначе SmsVerificationService.SendCodeAsync → TempData["RegisterPhone"] → /register/step2. [EnableRateLimiting(Sms)].
+
+### [2026-05-07] TASK-017 — Регистрация Шаг 2: верификация SMS-кода
+**Статус:** done
+**Summary:** Pages/Register/Step2.cshtml — форма ввода 6-значного кода. POST /register/step2: SmsVerificationService.VerifyCodeAsync (проверяет IsUsed, ExpiresAt < UtcNow) → TempData["PhoneVerified"]=true → /register/step3.
+
+### [2026-05-07] TASK-018 — Регистрация Шаг 3: создание профиля
+**Статус:** done
+**Summary:** Pages/Register/Step3.cshtml — форма: FullName, CityId (SelectList), SpecializationIds (checkbox), About, ExperienceYears, Whatsapp, PriceFrom, PriceTo. POST создаёт Master со status=Pending, MasterSpecialization записи, MasterAuthService.SignInAsync → /cabinet. TempData очищается. AddSession добавлен в Program.cs. dotnet build: 0 ошибок.
+**Проблемы:** Нет.
+
 ### [2026-05-07] TASK-008 — Tailwind CSS v4 + HTMX 2.0 + Alpine.js + GLightbox
 **Статус:** done
 **Summary:** _Layout.cshtml переписан: Bootstrap убран, подключены HTMX 2.0.4 (unpkg), Alpine.js 3.14.9 (CDN), GLightbox 3.3.0 (CDN). Tailwind v4 настроен через wwwroot/css/app.css с @import "tailwindcss" и @theme (--color-primary: orange). package.json создан со скриптами css:build и css:watch через @tailwindcss/cli@next.

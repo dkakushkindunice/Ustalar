@@ -345,7 +345,7 @@
         "Шаг 4: POST /register/step1 4 раза с одного IP — 4-я попытка даёт HTTP 429"
       ],
       "dependencies": ["TASK-014", "TASK-012", "TASK-005"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-017",
@@ -366,7 +366,7 @@
         "Шаг 4: Повторно ввести использованный код — ошибка 'Код уже использован'"
       ],
       "dependencies": ["TASK-016"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-018",
@@ -386,7 +386,7 @@
         "Шаг 4: Попытка регистрации с уже существующим телефоном → редирект на /cabinet/"
       ],
       "dependencies": ["TASK-017", "TASK-010"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-019",

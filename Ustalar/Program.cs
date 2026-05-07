@@ -11,6 +11,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Razor Pages
 builder.Services.AddRazorPages();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.IdleTimeout = TimeSpan.FromMinutes(20);
+});
 
 // AntiForgery protection for CSRF
 builder.Services.AddAntiforgery();
@@ -86,6 +92,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseSession();
 app.UseRouting();
 app.UseRateLimiter();
 app.UseAntiforgery();
