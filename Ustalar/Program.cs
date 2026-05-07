@@ -173,4 +173,8 @@ using (var scope = app.Services.CreateScope())
     await db.Database.MigrateAsync();
 }
 
+// УДАЛИТЬ ПЕРЕД ПРОДАКШНОМ
+if (app.Environment.IsDevelopment())
+    await DevDataSeeder.SeedAsync(app.Services);
+
 app.Run();
