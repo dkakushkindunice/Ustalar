@@ -36,6 +36,11 @@
 **Summary:** Program.cs обновлён: UseAntiforgery() добавлен в pipeline. AddRateLimiter() с двумя политиками: "sms" (3 req / 10 мин по IP) и "reviews" (2 req / час по IP), RejectionStatusCode=429. Создан Services/RateLimitPolicies.cs с константами. dotnet build: 0 ошибок.
 **Проблемы:** Была взята раньше TASK-005 — ошибка приоритизации (TASK-005 разблокирует цепочку TASK-010/011/016).
 
+### [2026-05-07] TASK-010 + TASK-011 — Cookie Auth (мастера + администраторы)
+**Статус:** done
+**Summary:** Program.cs обновлён: AddAuthentication("MasterCookie").AddCookie("AdminCookie") с раздельными куками (ustalar_master / ustalar_admin), оба HttpOnly/Secure/SameSite=Strict. Создан MasterAuthService (вход по телефону), AdminAuthService (вход по email + BCrypt.Verify, workFactor=12). Страницы: Cabinet/Index [Authorize MasterCookie], Register/Index (заглушка), Admin/Login, Admin/Index [Authorize AdminCookie] с logout. Пакет BCrypt.Net-Next 4.0.3 добавлен. dotnet build: 0 ошибок.
+**Проблемы:** Субагенты были заблокированы на разрешениях Write/Bash — задачи реализованы напрямую.
+
 ### [2026-05-07] TASK-005 — Seed данных: города и специализации
 **Статус:** done
 **Summary:** ApplicationDbContext.OnModelCreating дополнен HasData() для City (8 городов: Baku, Ganja, Sumgayit, Mingachevir, Lankaran, Shirvan, Nakhchivan, Quba) и Specialization (10 специальностей: elektrik, santexnik, boyaqci, dulger, qaynaqci, kafel, gipsokarton, kondisioner, parket, suvaqci). Создана миграция SeedInitialData (20260507115013). dotnet build: 0 ошибок.

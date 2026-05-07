@@ -15,6 +15,35 @@ builder.Services.AddRazorPages();
 // AntiForgery protection for CSRF
 builder.Services.AddAntiforgery();
 
+// Authentication — две независимые схемы
+builder.Services.AddAuthentication("MasterCookie")
+    .AddCookie("MasterCookie", options =>
+    {
+        options.LoginPath = "/register";
+        options.AccessDeniedPath = "/register";
+        options.ExpireTimeSpan = TimeSpan.FromDays(30);
+        options.SlidingExpiration = true;
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.SameSite = SameSiteMode.Strict;
+        options.Cookie.Name = "ustalar_master";
+    })
+    .AddCookie("AdminCookie", options =>
+    {
+        options.LoginPath = "/admin/login";
+        options.AccessDeniedPath = "/admin/login";
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.SameSite = SameSiteMode.Strict;
+        options.Cookie.Name = "ustalar_admin";
+    });
+
+builder.Services.AddAuthorization();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<MasterAuthService>();
+builder.Services.AddScoped<AdminAuthService>();
+
 // Rate Limiting
 builder.Services.AddRateLimiter(options =>
 {

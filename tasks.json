@@ -221,7 +221,7 @@
         "Шаг 4: Выход (POST /logout) → кука удаляется, /cabinet/ снова требует входа"
       ],
       "dependencies": ["TASK-005"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-011",
@@ -241,7 +241,7 @@
         "Шаг 4: Куки мастера не дают доступ к /admin/ (разные схемы)"
       ],
       "dependencies": ["TASK-005"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-012",

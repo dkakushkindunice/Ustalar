@@ -1,0 +1,27 @@
+@page "/admin/login"
+@model Ustalar.Pages.Admin.LoginModel
+@{
+    ViewData["Title"] = "Вход для администратора";
+}
+
+<div style="max-width:400px;margin:100px auto;">
+    <h2>Вход</h2>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div style="color:red">@Model.ErrorMessage</div>
+    }
+
+    <form method="post">
+        @Html.AntiForgeryToken()
+        <div>
+            <label>Email</label>
+            <input asp-for="Input.Email" type="email" required autocomplete="username" />
+        </div>
+        <div>
+            <label>Пароль</label>
+            <input asp-for="Input.Password" type="password" required autocomplete="current-password" />
+        </div>
+        <button type="submit">Войти</button>
+    </form>
+</div>

@@ -1,0 +1,13 @@
+@page "/admin"
+@model Ustalar.Pages.Admin.IndexModel
+@{
+    ViewData["Title"] = "Панель администратора";
+}
+
+<h1>Панель администратора</h1>
+<p>Список мастеров будет реализован в TASK-028</p>
+
+<form method="post" asp-page-handler="Logout">
+    @Html.AntiForgeryToken()
+    <button type="submit">Выйти</button>
+</form>
