@@ -1,0 +1,27 @@
+@page "/masters/{citySlug}/{specSlug}"
+@model Ustalar.Pages.Masters.CitySpecModel
+@{
+    ViewData["Title"] = $"{Model.CurrentSpec?.NameAz} — {Model.CurrentCity?.NameAz} — Ustalar.az";
+}
+
+@section Head {
+    <link rel="canonical" href="https://ustalar.az/masters/@Model.CurrentCity?.Slug/@Model.CurrentSpec?.Slug" />
+}
+
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <nav class="text-sm text-gray-400 mb-4 flex gap-1 items-center">
+        <a href="/masters" class="hover:text-orange-600">Ustalar</a>
+        <span>›</span>
+        <a href="/masters/@Model.CurrentCity?.Slug" class="hover:text-orange-600">@Model.CurrentCity?.NameAz</a>
+        <span>›</span>
+        <span class="text-gray-700">@Model.CurrentSpec?.NameAz</span>
+    </nav>
+
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">
+        @Model.CurrentCity?.NameAz — @Model.CurrentSpec?.NameAz
+    </h1>
+
+    <div id="masters-list">
+        @await Html.PartialAsync("_MastersList", Model.Catalog)
+    </div>
+</div>

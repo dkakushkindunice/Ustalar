@@ -492,7 +492,7 @@
         "Шаг 4: Хлебные крошки отображаются корректно на каждом уровне"
       ],
       "dependencies": ["TASK-022"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-024",
@@ -576,7 +576,7 @@
         "Шаг 4: POST без AntiForgery токена — HTTP 400"
       ],
       "dependencies": ["TASK-005", "TASK-012"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-028",
@@ -597,7 +597,7 @@
         "Шаг 4: Пагинация работает при > 20 мастеров"
       ],
       "dependencies": ["TASK-011", "TASK-005"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-029",

@@ -1,13 +1,108 @@
 @page "/admin"
 @model Ustalar.Pages.Admin.IndexModel
 @{
-    ViewData["Title"] = "Панель администратора";
+    ViewData["Title"] = "Admin panel — Ustalar.az";
 }
 
-<h1>Панель администратора</h1>
-<p>Список мастеров будет реализован в TASK-028</p>
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">Admin panel</h1>
+        <form method="post" asp-page-handler="Logout">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="text-sm text-gray-400 hover:text-red-500 transition">Çıxış</button>
+        </form>
+    </div>
 
-<form method="post" asp-page-handler="Logout">
-    @Html.AntiForgeryToken()
-    <button type="submit">Выйти</button>
-</form>
+    <!-- Фильтр по статусу -->
+    <div class="flex gap-2 mb-6">
+        @foreach (var status in new[] { ("", "Hamısı"), ("Pending", "Gözləyir"), ("Active", "Aktiv"), ("Blocked", "Blok") })
+        {
+            <a href="/admin?status=@status.Item1"
+               class="@(Model.CurrentStatus == status.Item1 ? "bg-orange-600 text-white" : "bg-white text-gray-600 border border-gray-300 hover:bg-orange-50") px-4 py-2 rounded-lg text-sm font-medium transition">
+                @status.Item2
+                @if (status.Item1 == "Pending" && Model.PendingCount > 0)
+                {
+                    <span class="ml-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">@Model.PendingCount</span>
+                }
+            </a>
+        }
+    </div>
+
+    <!-- Таблица мастеров -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <table class="w-full text-sm">
+            <thead class="bg-gray-50 border-b border-gray-100">
+                <tr>
+                    <th class="text-left px-4 py-3 text-gray-500 font-medium">Ad</th>
+                    <th class="text-left px-4 py-3 text-gray-500 font-medium">Telefon</th>
+                    <th class="text-left px-4 py-3 text-gray-500 font-medium">Şəhər</th>
+                    <th class="text-left px-4 py-3 text-gray-500 font-medium">Status</th>
+                    <th class="text-left px-4 py-3 text-gray-500 font-medium">Tarix</th>
+                    <th class="px-4 py-3"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+                @foreach (var master in Model.Masters)
+                {
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3 font-medium text-gray-900">@master.FullName</td>
+                        <td class="px-4 py-3 text-gray-500">@master.Phone</td>
+                        <td class="px-4 py-3 text-gray-500">@master.City?.NameAz</td>
+                        <td class="px-4 py-3">
+                            @{
+                                var badge = master.Status switch
+                                {
+                                    Ustalar.Models.MasterStatus.Pending => "bg-yellow-100 text-yellow-800",
+                                    Ustalar.Models.MasterStatus.Active => "bg-green-100 text-green-800",
+                                    Ustalar.Models.MasterStatus.Blocked => "bg-red-100 text-red-800",
+                                    _ => ""
+                                };
+                            }
+                            <span class="@badge text-xs px-2 py-1 rounded-full">@master.Status</span>
+                        </td>
+                        <td class="px-4 py-3 text-gray-400">@master.CreatedAt.ToString("dd.MM.yyyy")</td>
+                        <td class="px-4 py-3">
+                            <div class="flex gap-2">
+                                @if (master.Status == Ustalar.Models.MasterStatus.Pending)
+                                {
+                                    <form method="post" asp-page-handler="Approve" asp-route-id="@master.Id">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="text-xs text-green-600 hover:text-green-700 font-medium">Təsdiqlə</button>
+                                    </form>
+                                }
+                                @if (master.Status == Ustalar.Models.MasterStatus.Active)
+                                {
+                                    <form method="post" asp-page-handler="Block" asp-route-id="@master.Id">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="text-xs text-red-500 hover:text-red-600 font-medium">Blokla</button>
+                                    </form>
+                                }
+                                @if (master.Status == Ustalar.Models.MasterStatus.Blocked)
+                                {
+                                    <form method="post" asp-page-handler="Approve" asp-route-id="@master.Id">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="text-xs text-green-600 hover:text-green-700 font-medium">Bərpa et</button>
+                                    </form>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Пагинация -->
+    @if (Model.TotalPages > 1)
+    {
+        <div class="flex justify-center gap-2 mt-6">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <a href="/admin?status=@Model.CurrentStatus&page=@i"
+                   class="@(i == Model.CurrentPage ? "bg-orange-600 text-white" : "bg-white text-gray-600 border border-gray-300 hover:bg-orange-50") w-9 h-9 rounded-lg text-sm font-medium flex items-center justify-center transition">
+                    @i
+                </a>
+            }
+        </div>
+    }
+</div>

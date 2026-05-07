@@ -1,4 +1,4 @@
-@model Ustalar.Pages.Masters.IndexModel
+@model Ustalar.Models.CatalogViewModel
 
 @if (!Model.Masters.Any())
 {
@@ -12,7 +12,10 @@ else
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         @foreach (var master in Model.Masters)
         {
-            <a href="/masters/@master.City?.Slug/@(master.MasterSpecializations.FirstOrDefault()?.Specialization?.Slug ?? "usta")/@master.Id"
+            var citySlug = master.City?.Slug ?? "baku";
+            var specSlug = master.MasterSpecializations.FirstOrDefault()?.Specialization?.Slug ?? "usta";
+
+            <a href="/masters/@citySlug/@specSlug/@master.Id"
                class="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition p-4 flex flex-col">
 
                 <div class="w-16 h-16 rounded-full bg-gray-100 mb-3 overflow-hidden flex-shrink-0">
@@ -23,14 +26,11 @@ else
                     }
                     else
                     {
-                        <div class="w-full h-full flex items-center justify-center text-2xl text-gray-300">
-                            👤
-                        </div>
+                        <span class="w-full h-full flex items-center justify-center text-gray-300 text-2xl">👤</span>
                     }
                 </div>
 
                 <h3 class="font-semibold text-gray-900 text-sm">@master.FullName</h3>
-
                 <p class="text-xs text-gray-400 mt-0.5">@master.City?.NameAz</p>
 
                 @if (master.MasterSpecializations.Any())
@@ -56,7 +56,6 @@ else
         }
     </div>
 
-    <!-- Пагинация -->
     @if (Model.TotalPages > 1)
     {
         <div class="flex justify-center gap-2 mt-8">

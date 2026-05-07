@@ -1,0 +1,63 @@
+@page "/reviews/{masterId:int}"
+@model Ustalar.Pages.Reviews.CreateModel
+@{
+    Layout = null;
+}
+
+@if (Model.Success)
+{
+    <div class="bg-green-50 border border-green-200 text-green-700 rounded-lg px-4 py-3 text-sm">
+        Rəyiniz göndərildi. Moderasiyadan sonra dərc olunacaq.
+    </div>
+}
+else
+{
+    <form method="post" class="space-y-4">
+        @Html.AntiForgeryToken()
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2 text-sm">
+                @Model.ErrorMessage
+            </div>
+        }
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Adınız *</label>
+            <input asp-for="Input.ReviewerName" type="text" required
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" />
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Telefon *</label>
+            <input asp-for="Input.ReviewerPhone" type="tel" placeholder="+994501234567" required
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" />
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Qiymət *</label>
+            <div class="flex gap-2" x-data="{ rating: 0 }">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    <button type="button"
+                            x-on:click="rating = @i; $refs.ratingInput.value = @i"
+                            :class="rating >= @i ? 'text-yellow-400' : 'text-gray-300'"
+                            class="text-2xl transition">★</button>
+                }
+                <input x-ref="ratingInput" asp-for="Input.Rating" type="hidden" />
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Şərh</label>
+            <textarea asp-for="Input.Text" rows="3"
+                      class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      placeholder="İş haqqında fikirlərinizi yazın..."></textarea>
+        </div>
+
+        <button type="submit"
+                class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg px-4 py-2.5 text-sm transition">
+            Rəy göndər
+        </button>
+    </form>
+}
