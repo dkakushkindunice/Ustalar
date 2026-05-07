@@ -97,7 +97,7 @@
         "Шаг 4: dotnet ef database update — миграция применяется к PostgreSQL успешно"
       ],
       "dependencies": ["TASK-003"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-005",

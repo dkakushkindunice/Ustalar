@@ -30,3 +30,8 @@
 **Статус:** done
 **Summary:** Добавлены пакеты Npgsql.EntityFrameworkCore.PostgreSQL 10.0.1 и Microsoft.EntityFrameworkCore.Design. Создан Data/ApplicationDbContext.cs. Program.cs обновлён с UseNpgsql(). appsettings.json содержит ConnectionStrings:Default. dotnet build: 0 ошибок. dotnet ef dbcontext info: Provider=Npgsql, Database=ustalar.
 **Проблемы:** Нет.
+
+### [2026-05-07] TASK-004 — Entity-модели EF Core + индексы + миграция
+**Статус:** done
+**Summary:** Созданы 9 моделей в Models/: Master, City, Specialization, MasterSpecialization, PortfolioPhoto, Review, SmsVerification, AdminUser, AdminActionLog. ApplicationDbContext обновлён с DbSet'ами и Fluent API конфигурацией: составной PK для MasterSpecializations, индексы {CityId,Status}, {Status}, Phone(unique), {MasterId,IsApproved} для фото и отзывов, уникальные slug для Cities/Specializations. Миграция InitialCreate создана (20260507114242). dotnet build: 0 ошибок.
+**Проблемы:** Нет.
