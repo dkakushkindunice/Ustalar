@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Ustalar.Data;
 using Ustalar.Models;
 
@@ -17,11 +18,14 @@ public record MastersCatalogResult(
 public class MastersCatalogService
 {
     private readonly ApplicationDbContext _db;
+    private readonly IMemoryCache _cache;
     private const int PageSize = 12;
+    private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(10);
 
-    public MastersCatalogService(ApplicationDbContext db)
+    public MastersCatalogService(ApplicationDbContext db, IMemoryCache cache)
     {
         _db = db;
+        _cache = cache;
     }
 
     public async Task<MastersCatalogResult?> QueryAsync(
@@ -29,8 +33,17 @@ public class MastersCatalogService
     {
         page = page < 1 ? 1 : page;
 
-        var cities = await _db.Cities.AsNoTracking().OrderBy(c => c.NameAz).ToListAsync();
-        var specs = await _db.Specializations.AsNoTracking().OrderBy(s => s.NameAz).ToListAsync();
+        var cities = await _cache.GetOrCreateAsync("catalog:cities", async entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = CacheDuration;
+            return await _db.Cities.AsNoTracking().OrderBy(c => c.NameAz).ToListAsync();
+        }) ?? [];
+
+        var specs = await _cache.GetOrCreateAsync("catalog:specs", async entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = CacheDuration;
+            return await _db.Specializations.AsNoTracking().OrderBy(s => s.NameAz).ToListAsync();
+        }) ?? [];
 
         City? currentCity = null;
         Specialization? currentSpec = null;

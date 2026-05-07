@@ -16,6 +16,66 @@
 
 <!-- Агенты добавляют записи ниже этой строки -->
 
+### [2026-05-07] TASK-013 — Cloudflare R2 + ImageSharp (file storage)
+**Статус:** done
+**Summary:** IFileStorageService.cs + R2FileStorageService.cs + ImageProcessingService.cs созданы. AmazonS3Client зарегистрирован в DI с BasicAWSCredentials + ServiceURL (ForcePathStyle=true для R2). IFileStorageService и ImageProcessingService зарегистрированы как Singleton. R2 секция добавлена в appsettings.json. SixLabors.ImageSharp обновлён до 3.1.12 (CVE закрыты). dotnet build: 0 ошибок, 0 предупреждений.
+**Проблемы:** 3.1.6 имел high+medium CVE → обновлён до 3.1.12, где оба закрыты.
+
+### [2026-05-07] TASK-020 — Загрузка фото в портфолио
+**Статус:** done
+**Summary:** Pages/Cabinet/Photos/Upload.cshtml (@page "/cabinet/photos/upload") — форма загрузки с [Authorize(MasterCookie)]. OnPostAsync: ImageProcessingService.ProcessUploadAsync → upload original в "photos" + thumb в "thumbs" → PortfolioPhoto в БД (IsApproved=false). Лимит 10 фото на мастера.
+**Проблемы:** Нет.
+
+### [2026-05-07] TASK-021 — Удаление фото из портфолио
+**Статус:** done
+**Summary:** OnPostDeletePhotoAsync добавлен в Cabinet/Index.cshtml.cs — проверяет принадлежность фото мастеру, удаляет из R2 (original + thumb), удаляет из БД. Кнопка "✕" (hover) добавлена в Index.cshtml с confirm диалогом.
+**Проблемы:** Нет.
+
+### [2026-05-07] TASK-031 — Загрузка аватара
+**Статус:** done
+**Summary:** Cabinet/Edit.cshtml дополнен отдельной формой с enctype=multipart/form-data для аватара. OnPostUploadAvatarAsync: ProcessAvatarAsync (300x300 WebP) → DeleteAsync старого → UploadAsync в "avatars" → Master.AvatarUrl обновлён. Edit.cshtml.cs получил IFileStorageService + ImageProcessingService в DI.
+**Проблемы:** Нет.
+
+### [2026-05-07] TASK-026 — SEO: sitemap.xml + robots.txt
+**Статус:** done
+**Summary:** Pages/Sitemap.cshtml (@page "/sitemap.xml") — генерирует XML sitemap со всеми городами, городами+специализациями, активными мастерами. wwwroot/robots.txt: Disallow /admin/ /cabinet/ /register/, Sitemap: https://ustalar.az/sitemap.xml.
+**Проблемы:** Нет.
+
+### [2026-05-07] TASK-030 — BackgroundService: очистка SMS кодов
+**Статус:** done
+**Summary:** Services/SmsCleanupService.cs : BackgroundService — каждые 30 мин ExecuteDeleteAsync для записей где ExpiresAt < UtcNow. Использует IServiceScopeFactory для получения DbContext в hosted service. Зарегистрирован через AddHostedService<SmsCleanupService>().
+**Проблемы:** Нет.
+
+### [2026-05-07] TASK-032 — IMemoryCache для городов и специализаций
+**Статус:** done
+**Summary:** MastersCatalogService обновлён: _cache.GetOrCreateAsync("catalog:cities") и ("catalog:specs") с AbsoluteExpiration 10 мин. AddMemoryCache() добавлен в Program.cs. DI конструктор обновлён.
+**Проблемы:** Нет.
+
+### [2026-05-07] TASK-033 — Response compression gzip/brotli
+**Статус:** done
+**Summary:** AddResponseCompression с BrotliCompressionProvider + GzipCompressionProvider (уровень Fastest), EnableForHttps=true. MimeTypes расширены text/html, application/json, image/svg+xml, application/xml. app.UseResponseCompression() перед UseStaticFiles.
+**Проблемы:** Нет.
+
+### [2026-05-07] TASK-006 — GitLab CI/CD
+**Статус:** done
+**Summary:** .gitlab-ci.yml создан: stages build/test/deploy. build: docker:27-dind, docker build + push к CI_REGISTRY. test: dotnet restore + build + test (Release). deploy: SSH к DEPLOY_HOST, docker compose pull + up -d --no-deps. Переменные: SSH_PRIVATE_KEY, DEPLOY_HOST, DEPLOY_USER через GitLab CI variables.
+**Проблемы:** Нет.
+
+### [2026-05-07] TASK-007 — Nginx SSL + Let's Encrypt
+**Статус:** done
+**Summary:** nginx/nginx.conf обновлён: HTTP→HTTPS redirect (кроме /.well-known/acme-challenge/), HTTPS server с ssl_certificate из /etc/letsencrypt, TLS 1.2+1.3, HSTS, X-Frame-Options DENY, www→non-www редирект, client_max_body_size 12m, Cache-Control для статики.
+**Проблемы:** Нет.
+
+### [2026-05-07] TASK-009 — Локализация AZ/RU (.resx)
+**Статус:** done
+**Summary:** Resources/SharedResource.az.resx + Resources/SharedResource.ru.resx созданы (Masters, Register, Cabinet, Search, City, Specialization, Experience, Price, Reviews, Phone, Save, Cancel, Delete, Upload, VerifiedMaster, YearsExp). Resources/SharedResource.cs — marker класс. AddLocalization(ResourcesPath="Resources") + RequestLocalizationOptions (default=az, supported=az+ru) зарегистрированы. UseRequestLocalization() добавлен в pipeline.
+**Проблемы:** Нет.
+
+### [2026-05-07] TASK-034 — Финальная полировка: 404/500 страницы
+**Статус:** done
+**Summary:** Pages/Shared/Error404.cshtml + Error500.cshtml созданы (Tailwind, ссылка на главную). UseStatusCodePagesWithReExecute("/Shared/Error{0}") добавлен в pipeline. UseExceptionHandler заменён на /Shared/Error500.
+**Проблемы:** Нет.
+
 ### [2026-05-07] TASK-001 — Создать ASP.NET Core 10 Razor Pages проект
 **Статус:** done
 **Summary:** Создан проект Ustalar в /Users/albina/Desktop/work/Ustalar/ через `dotnet new webapp --framework net10.0`. Добавлены папки Models/, Services/, Data/, Resources/Pages/, Resources/Shared/. Program.cs настроен с AddRazorPages(), AddAntiforgery(), UseStaticFiles(), UseRouting(), UseAuthorization(). dotnet build: 0 ошибок, 0 предупреждений.

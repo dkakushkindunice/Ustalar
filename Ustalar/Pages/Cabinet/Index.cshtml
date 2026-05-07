@@ -88,7 +88,7 @@
             <div class="grid grid-cols-3 gap-2">
                 @foreach (var photo in Model.Master.PortfolioPhotos)
                 {
-                    <div class="relative aspect-square">
+                    <div class="relative aspect-square group">
                         <img src="@photo.ThumbnailUrl" alt="Portfolio"
                              class="w-full h-full object-cover rounded-lg" loading="lazy" />
                         @if (!photo.IsApproved)
@@ -97,6 +97,16 @@
                                 Gözləyir
                             </span>
                         }
+                        <form method="post" asp-page-handler="DeletePhoto"
+                              class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition"
+                              onsubmit="return confirm('Fotoşəkili sil?')">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="photoId" value="@photo.Id" />
+                            <button type="submit"
+                                    class="bg-red-500 hover:bg-red-600 text-white rounded p-1 text-xs leading-none">
+                                ✕
+                            </button>
+                        </form>
                     </div>
                 }
             </div>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <data name="Masters" xml:space="preserve">
+    <value>Ustalar</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Qeydiyyat</value>
+  </data>
+  <data name="Cabinet" xml:space="preserve">
+    <value>Kabinet</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Axtar</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>Şəhər</value>
+  </data>
+  <data name="Specialization" xml:space="preserve">
+    <value>İxtisas</value>
+  </data>
+  <data name="Experience" xml:space="preserve">
+    <value>Təcrübə</value>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Qiymət</value>
+  </data>
+  <data name="Reviews" xml:space="preserve">
+    <value>Rəylər</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Yadda saxla</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>İmtina</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Sil</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Yüklə</value>
+  </data>
+  <data name="VerifiedMaster" xml:space="preserve">
+    <value>Təsdiqlənmiş usta</value>
+  </data>
+  <data name="YearsExp" xml:space="preserve">
+    <value>il təcrübə</value>
+  </data>
+</root>

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Ustalar.Data;
+using Ustalar.Services;
 
 namespace Ustalar.Pages.Cabinet;
 
@@ -11,14 +12,21 @@ namespace Ustalar.Pages.Cabinet;
 public class EditModel : PageModel
 {
     private readonly ApplicationDbContext _db;
+    private readonly ImageProcessingService _imaging;
+    private readonly IFileStorageService _storage;
 
-    public EditModel(ApplicationDbContext db)
+    public EditModel(ApplicationDbContext db, ImageProcessingService imaging, IFileStorageService storage)
     {
         _db = db;
+        _imaging = imaging;
+        _storage = storage;
     }
 
     [BindProperty]
     public InputModel Input { get; set; } = new();
+
+    public string? AvatarUrl { get; set; }
+    public string? AvatarError { get; set; }
 
     public class InputModel
     {
@@ -31,10 +39,11 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnGetAsync()
     {
-        var masterId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var masterId = GetMasterId();
         var master = await _db.Masters.AsNoTracking().FirstOrDefaultAsync(m => m.Id == masterId);
         if (master == null) return RedirectToPage("/Register/Index");
 
+        AvatarUrl = master.AvatarUrl;
         Input = new InputModel
         {
             About = master.About,
@@ -50,7 +59,7 @@ public class EditModel : PageModel
     {
         if (!ModelState.IsValid) return Page();
 
-        var masterId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var masterId = GetMasterId();
         var master = await _db.Masters.FirstOrDefaultAsync(m => m.Id == masterId);
         if (master == null) return RedirectToPage("/Register/Index");
 
@@ -64,4 +73,56 @@ public class EditModel : PageModel
         await _db.SaveChangesAsync();
         return RedirectToPage("/Cabinet/Index");
     }
+
+    public async Task<IActionResult> OnPostUploadAvatarAsync(IFormFile avatar)
+    {
+        var masterId = GetMasterId();
+        var master = await _db.Masters.FirstOrDefaultAsync(m => m.Id == masterId);
+        if (master == null) return RedirectToPage("/Register/Index");
+
+        if (avatar == null || avatar.Length == 0)
+        {
+            AvatarError = "Zəhmət olmasa şəkil seçin.";
+            await LoadViewData(master);
+            return Page();
+        }
+
+        try
+        {
+            var (stream, contentType) = await _imaging.ProcessAvatarAsync(avatar);
+
+            if (!string.IsNullOrEmpty(master.AvatarUrl))
+                await _storage.DeleteAsync(master.AvatarUrl);
+
+            var url = await _storage.UploadAsync(stream, contentType, "avatars");
+            master.AvatarUrl = url;
+            master.UpdatedAt = DateTime.UtcNow;
+            await _db.SaveChangesAsync();
+
+            return RedirectToPage();
+        }
+        catch (InvalidOperationException ex)
+        {
+            AvatarError = ex.Message;
+            await LoadViewData(master);
+            return Page();
+        }
+    }
+
+    private async Task LoadViewData(Ustalar.Models.Master master)
+    {
+        AvatarUrl = master.AvatarUrl;
+        var dbMaster = await _db.Masters.AsNoTracking().FirstOrDefaultAsync(m => m.Id == master.Id);
+        Input = new InputModel
+        {
+            About = dbMaster?.About,
+            Whatsapp = dbMaster?.Whatsapp,
+            ExperienceYears = dbMaster?.ExperienceYears,
+            PriceFrom = dbMaster?.PriceFrom,
+            PriceTo = dbMaster?.PriceTo
+        };
+    }
+
+    private int GetMasterId() =>
+        int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 }

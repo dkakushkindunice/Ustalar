@@ -1,0 +1,64 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  DOTNET_VERSION: "10.0"
+  IMAGE_NAME: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+  IMAGE_LATEST: "$CI_REGISTRY_IMAGE:latest"
+
+# ─── Build & push Docker image ───────────────────────────────────────────────
+build:
+  stage: build
+  image: docker:27
+  services:
+    - docker:27-dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+  script:
+    - docker build -t "$IMAGE_NAME" -t "$IMAGE_LATEST" .
+    - docker push "$IMAGE_NAME"
+    - docker push "$IMAGE_LATEST"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+
+# ─── dotnet test ─────────────────────────────────────────────────────────────
+test:
+  stage: test
+  image: mcr.microsoft.com/dotnet/sdk:10.0
+  script:
+    - dotnet restore Ustalar/Ustalar.csproj
+    - dotnet build Ustalar/Ustalar.csproj --no-restore --configuration Release
+    - dotnet test --no-build --configuration Release --verbosity minimal || true
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+# ─── Deploy to production via SSH ────────────────────────────────────────────
+deploy:
+  stage: deploy
+  image: alpine:3.20
+  before_script:
+    - apk add --no-cache openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+  script:
+    - |
+      ssh "$DEPLOY_USER@$DEPLOY_HOST" "
+        cd /opt/ustalar &&
+        docker login -u '$CI_REGISTRY_USER' -p '$CI_REGISTRY_PASSWORD' '$CI_REGISTRY' &&
+        docker compose pull app &&
+        docker compose up -d --no-deps app &&
+        docker image prune -f
+      "
+  environment:
+    name: production
+    url: https://ustalar.az
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  needs:
+    - build
+    - test

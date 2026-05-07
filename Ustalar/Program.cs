@@ -1,6 +1,10 @@
+using System.IO.Compression;
 using System.Threading.RateLimiting;
+using Amazon.Runtime;
+using Amazon.S3;
 using Ustalar.Data;
 using Ustalar.Services;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,6 +60,49 @@ builder.Services.AddScoped<SmsVerificationService>();
 builder.Services.AddScoped<MastersCatalogService>();
 builder.Services.AddSingleton<ISmsService, TwilioSmsService>();
 
+// R2 / S3 file storage
+var r2Config = builder.Configuration.GetSection("R2");
+var r2Credentials = new BasicAWSCredentials(
+    r2Config["AccessKey"] ?? throw new InvalidOperationException("R2:AccessKey not configured"),
+    r2Config["SecretKey"] ?? throw new InvalidOperationException("R2:SecretKey not configured"));
+var r2S3Config = new AmazonS3Config
+{
+    ServiceURL = r2Config["ServiceUrl"] ?? throw new InvalidOperationException("R2:ServiceUrl not configured"),
+    ForcePathStyle = true
+};
+builder.Services.AddSingleton<IAmazonS3>(_ => new AmazonS3Client(r2Credentials, r2S3Config));
+builder.Services.AddSingleton<IFileStorageService, R2FileStorageService>();
+builder.Services.AddSingleton<ImageProcessingService>();
+
+// In-memory cache for catalog dropdowns
+builder.Services.AddMemoryCache();
+
+// Response compression (gzip + brotli)
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.Providers.Add<BrotliCompressionProvider>();
+    options.Providers.Add<GzipCompressionProvider>();
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        ["text/html", "application/json", "image/svg+xml", "application/xml"]);
+});
+builder.Services.Configure<BrotliCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
+builder.Services.Configure<GzipCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
+
+// Background services
+builder.Services.AddHostedService<SmsCleanupService>();
+
+// Localization AZ (default) + RU
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supported = new[] { "az", "ru" };
+    options.SetDefaultCulture("az")
+           .AddSupportedCultures(supported)
+           .AddSupportedUICultures(supported);
+    options.ApplyCurrentCultureToResponseHeaders = true;
+});
+
 // Rate Limiting
 builder.Services.AddRateLimiter(options =>
 {
@@ -90,10 +137,14 @@ var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler("/Shared/Error500");
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithReExecute("/Shared/Error{0}");
+app.UseRequestLocalization();
+
+app.UseResponseCompression();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();

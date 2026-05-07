@@ -10,6 +10,30 @@
         <h1 class="text-xl font-bold text-gray-900">Profili redaktə et</h1>
     </div>
 
+    <form method="post" asp-page-handler="UploadAvatar" enctype="multipart/form-data"
+          class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-4">
+        @Html.AntiForgeryToken()
+        <h2 class="font-semibold text-gray-900 mb-3">Avatar</h2>
+        @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+        {
+            <img src="@Model.AvatarUrl" alt="avatar"
+                 class="w-20 h-20 rounded-full object-cover mb-3" />
+        }
+        @if (!string.IsNullOrEmpty(Model.AvatarError))
+        {
+            <p class="text-sm text-red-600 mb-2">@Model.AvatarError</p>
+        }
+        <div class="flex items-center gap-3">
+            <input type="file" name="Avatar" accept="image/jpeg,image/png,image/webp"
+                   class="text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg
+                          file:border-0 file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100" />
+            <button type="submit"
+                    class="bg-orange-600 hover:bg-orange-700 text-white text-sm px-4 py-1.5 rounded-lg transition">
+                Yüklə
+            </button>
+        </div>
+    </form>
+
     <form method="post" class="space-y-5 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         @Html.AntiForgeryToken()
 
