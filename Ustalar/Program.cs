@@ -10,6 +10,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 
 // Razor Pages
+builder.Services.AddHealthChecks()
+    .AddNpgSql(builder.Configuration.GetConnectionString("Default")!);
+
 builder.Services.AddRazorPages();
 builder.Services.AddSession(options =>
 {
@@ -99,5 +102,6 @@ app.UseRateLimiter();
 app.UseAntiforgery();
 app.UseAuthorization();
 app.MapRazorPages();
+app.MapHealthChecks("/health");
 
 app.Run();

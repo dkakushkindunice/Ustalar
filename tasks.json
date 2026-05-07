@@ -324,7 +324,7 @@
         "Шаг 4: Запустить postgres: docker compose start postgres — /health снова 200"
       ],
       "dependencies": ["TASK-001"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-016",
@@ -513,7 +513,7 @@
         "Шаг 4: WhatsApp кнопка содержит корректный номер в формате wa.me/994..."
       ],
       "dependencies": ["TASK-023"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-025",
@@ -534,7 +534,7 @@
         "Шаг 4: Отключить JS в браузере — главная страница всё равно работает"
       ],
       "dependencies": ["TASK-022"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-026",
@@ -619,7 +619,7 @@
         "Шаг 4: SELECT * FROM admin_action_logs ORDER BY created_at DESC — все действия записаны"
       ],
       "dependencies": ["TASK-028"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-030",

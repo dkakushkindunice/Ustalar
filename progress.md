@@ -36,6 +36,34 @@
 **Summary:** Program.cs обновлён: UseAntiforgery() добавлен в pipeline. AddRateLimiter() с двумя политиками: "sms" (3 req / 10 мин по IP) и "reviews" (2 req / час по IP), RejectionStatusCode=429. Создан Services/RateLimitPolicies.cs с константами. dotnet build: 0 ошибок.
 **Проблемы:** Была взята раньше TASK-005 — ошибка приоритизации (TASK-005 разблокирует цепочку TASK-010/011/016).
 
+### [2026-05-07] TASK-024 — Страница профиля мастера
+**Статус:** done
+**Summary:** Pages/Masters/Profile.cshtml (@page "/masters/{citySlug}/{specSlug}/{masterId:int}") — профиль с аватаром, специализациями, опытом, ценой, WhatsApp/tel кнопками. Галерея фото через GLightbox. Список одобренных отзывов с рейтингом и средним баллом. Форма отзыва подгружается через hx-get="/reviews/{masterId}" hx-trigger="load". 404 при status!=Active или неверном citySlug. OG-теги и canonical.
+
+### [2026-05-07] TASK-025 — Главная страница
+**Статус:** done
+**Summary:** Pages/Index.cshtml — hero-блок с поиском (select специализации → /masters?specSlug=), секция популярных специализаций (10 штук), секция проверенных мастеров (6 random is_verified=true). hreflang az/ru. SSR, без JS-зависимостей для контента.
+
+### [2026-05-07] TASK-015 — Health check endpoint /health
+**Статус:** done
+**Summary:** AddHealthChecks().AddNpgSql(connectionString) + MapHealthChecks("/health"). Пакет AspNetCore.HealthChecks.NpgSql 9.0.0 добавлен. При недоступной БД → 503, при доступной → 200 Healthy.
+
+### [2026-05-07] TASK-029 — Admin: модерация отзывов и фото
+**Статус:** done
+**Summary:** Pages/Admin/Reviews.cshtml — список неодобренных отзывов с OnPostApproveAsync/OnPostRejectAsync. Pages/Admin/Photos.cshtml — сетка фото на модерации с теми же хендлерами. Оба [Authorize(AdminCookie)]. dotnet build: 0 ошибок.
+
+### [2026-05-07] TASK-023 — URL-роутинг каталога по городу и специализации
+**Статус:** done
+**Summary:** Создан MastersCatalogService с общей логикой запроса (фильтр, пагинация, 404 при несуществующем slug). CatalogViewModel выделен в отдельный класс. Созданы Pages/Masters/City.cshtml (@page "/masters/{citySlug}") и CitySpec.cshtml (@page "/masters/{citySlug}/{specSlug}") с хлебными крошками и canonical URL. Index.cshtml переработан под CatalogViewModel. dotnet build: 0 ошибок.
+
+### [2026-05-07] TASK-027 — Система отзывов
+**Статус:** done
+**Summary:** Pages/Reviews/Create.cshtml (@page "/reviews/{masterId:int}") — форма с reviewer_name, reviewer_phone, rating (Alpine.js звёзды), text. POST создаёт Review с is_approved=false. [EnableRateLimiting(Reviews)]. AntiForgery. Успех показывает inline сообщение без перезагрузки (Layout=null, встраивается в профиль через HTMX).
+
+### [2026-05-07] TASK-028 — Административная панель: список мастеров
+**Статус:** done
+**Summary:** Pages/Admin/Index.cshtml — таблица мастеров с фильтром по статусу (Pending/Active/Blocked), бейдж с количеством на модерации, кнопки Approve/Block прямо в строке, пагинация 20/стр. [Authorize(AdminCookie)]. OnPostApproveAsync/OnPostBlockAsync меняют статус. dotnet build: 0 ошибок.
+
 ### [2026-05-07] TASK-019 — Личный кабинет мастера
 **Статус:** done
 **Summary:** Pages/Cabinet/Index.cshtml — показывает профиль, статус (pending/blocked баннер), специализации, портфолио. Pages/Cabinet/Edit.cshtml — редактирование About, Whatsapp, ExperienceYears, PriceFrom, PriceTo с сохранением UpdatedAt. Оба [Authorize(MasterCookie)], logout через OnPostLogoutAsync. dotnet build: 0 ошибок.

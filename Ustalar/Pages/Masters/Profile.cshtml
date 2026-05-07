@@ -1,0 +1,206 @@
+@page "/masters/{citySlug}/{specSlug}/{masterId:int}"
+@model Ustalar.Pages.Masters.ProfileModel
+@{
+    ViewData["Title"] = $"{Model.Master.FullName} — {Model.Master.City?.NameAz} — Ustalar.az";
+    ViewData["Description"] = Model.Master.About ?? $"{Model.Master.FullName} — {Model.PrimarySpec?.NameAz}";
+}
+
+@section Head {
+    <link rel="canonical" href="https://ustalar.az/masters/@Model.CitySlug/@Model.SpecSlug/@Model.Master.Id" />
+    <meta name="description" content="@ViewData["Description"]" />
+    <meta property="og:title" content="@ViewData["Title"]" />
+    <meta property="og:description" content="@ViewData["Description"]" />
+    @if (!string.IsNullOrEmpty(Model.Master.AvatarUrl))
+    {
+        <meta property="og:image" content="@Model.Master.AvatarUrl" />
+    }
+}
+
+<div class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Хлебные крошки -->
+    <nav class="text-sm text-gray-400 mb-6 flex gap-1 items-center flex-wrap">
+        <a href="/masters" class="hover:text-orange-600">Ustalar</a>
+        <span>›</span>
+        <a href="/masters/@Model.CitySlug" class="hover:text-orange-600">@Model.Master.City?.NameAz</a>
+        @if (Model.PrimarySpec != null)
+        {
+            <span>›</span>
+            <a href="/masters/@Model.CitySlug/@Model.SpecSlug" class="hover:text-orange-600">@Model.PrimarySpec.NameAz</a>
+        }
+        <span>›</span>
+        <span class="text-gray-700">@Model.Master.FullName</span>
+    </nav>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        <!-- Левая колонка: профиль -->
+        <div class="md:col-span-2">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="w-20 h-20 rounded-full bg-gray-100 overflow-hidden flex-shrink-0">
+                        @if (!string.IsNullOrEmpty(Model.Master.AvatarUrl))
+                        {
+                            <img src="@Model.Master.AvatarUrl" alt="@Model.Master.FullName"
+                                 class="w-full h-full object-cover" />
+                        }
+                        else
+                        {
+                            <span class="w-full h-full flex items-center justify-center text-4xl text-gray-300">👤</span>
+                        }
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-xl font-bold text-gray-900">@Model.Master.FullName</h1>
+                            @if (Model.Master.IsVerified)
+                            {
+                                <span title="Təsdiqlənmiş usta" class="text-orange-500">✓</span>
+                            }
+                        </div>
+                        <p class="text-gray-500 text-sm mt-0.5">@Model.Master.City?.NameAz</p>
+                        <div class="flex flex-wrap gap-1.5 mt-2">
+                            @foreach (var ms in Model.Master.MasterSpecializations)
+                            {
+                                <span class="bg-orange-50 text-orange-700 text-xs px-2.5 py-0.5 rounded-full">
+                                    @ms.Specialization.NameAz
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-5 pt-5 border-t border-gray-100 text-sm">
+                    @if (Model.Master.ExperienceYears.HasValue)
+                    {
+                        <div>
+                            <p class="text-gray-400 text-xs">Təcrübə</p>
+                            <p class="font-medium">@Model.Master.ExperienceYears il</p>
+                        </div>
+                    }
+                    @if (Model.Master.PriceFrom.HasValue || Model.Master.PriceTo.HasValue)
+                    {
+                        <div>
+                            <p class="text-gray-400 text-xs">Qiymət</p>
+                            <p class="font-medium">
+                                @(Model.Master.PriceFrom?.ToString("0") ?? "—") –
+                                @(Model.Master.PriceTo?.ToString("0") ?? "—") AZN
+                            </p>
+                        </div>
+                    }
+                    @if (Model.ApprovedReviews.Any())
+                    {
+                        <div>
+                            <p class="text-gray-400 text-xs">Reytinq</p>
+                            <p class="font-medium">
+                                ★ @Model.AverageRating.ToString("0.0")
+                                <span class="text-gray-400 font-normal">(@Model.ApprovedReviews.Count)</span>
+                            </p>
+                        </div>
+                    }
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.Master.About))
+                {
+                    <p class="mt-4 text-sm text-gray-600 leading-relaxed">@Model.Master.About</p>
+                }
+            </div>
+
+            <!-- Портфолио -->
+            @if (Model.ApprovedPhotos.Any())
+            {
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+                    <h2 class="font-semibold text-gray-900 mb-4">Portfolio</h2>
+                    <div class="grid grid-cols-3 gap-2">
+                        @foreach (var photo in Model.ApprovedPhotos)
+                        {
+                            <a href="@photo.ImageUrl" class="glightbox aspect-square block overflow-hidden rounded-lg"
+                               data-gallery="portfolio">
+                                <img src="@photo.ThumbnailUrl" alt="@(photo.Description ?? "Portfolio")"
+                                     class="w-full h-full object-cover hover:scale-105 transition" loading="lazy" />
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Отзывы -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+                <h2 class="font-semibold text-gray-900 mb-4">
+                    Rəylər
+                    @if (Model.ApprovedReviews.Any())
+                    {
+                        <span class="text-gray-400 font-normal text-sm">(@Model.ApprovedReviews.Count)</span>
+                    }
+                </h2>
+
+                @if (!Model.ApprovedReviews.Any())
+                {
+                    <p class="text-sm text-gray-400">Hələ rəy yoxdur</p>
+                }
+                else
+                {
+                    <div class="space-y-4">
+                        @foreach (var review in Model.ApprovedReviews)
+                        {
+                            <div class="border-b border-gray-50 pb-4 last:border-0 last:pb-0">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="font-medium text-sm text-gray-900">@review.ReviewerName</span>
+                                    <span class="text-yellow-400 text-sm">@string.Concat(Enumerable.Repeat("★", review.Rating))<span class="text-gray-200">@string.Concat(Enumerable.Repeat("★", 5 - review.Rating))</span></span>
+                                </div>
+                                @if (!string.IsNullOrEmpty(review.Text))
+                                {
+                                    <p class="text-sm text-gray-600">@review.Text</p>
+                                }
+                                <p class="text-xs text-gray-400 mt-1">@review.CreatedAt.ToString("dd.MM.yyyy")</p>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Форма отзыва -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <h2 class="font-semibold text-gray-900 mb-4">Rəy yaz</h2>
+                <div hx-get="/reviews/@Model.Master.Id"
+                     hx-trigger="load"
+                     hx-swap="innerHTML">
+                    <p class="text-sm text-gray-400">Yüklənir...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Правая колонка: контакт -->
+        <div class="md:col-span-1">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-6">
+                <h3 class="font-semibold text-gray-900 mb-4">Əlaqə</h3>
+
+                @if (!string.IsNullOrEmpty(Model.Master.Whatsapp))
+                {
+                    <a href="https://wa.me/@(Model.Master.Whatsapp.Replace("+", "").Replace(" ", ""))"
+                       target="_blank" rel="noopener"
+                       class="flex items-center justify-center gap-2 w-full bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg px-4 py-3 transition mb-3">
+                        WhatsApp ilə əlaqə
+                    </a>
+                }
+
+                <a href="tel:@Model.Master.Phone"
+                   class="flex items-center justify-center gap-2 w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg px-4 py-3 transition">
+                    Zəng et
+                </a>
+
+                <p class="text-xs text-gray-400 text-center mt-3">
+                    Nömrəni zəng edərkən Ustalar.az-dan tapdığınızı deyin
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            GLightbox({ selector: '.glightbox' });
+        });
+    </script>
+}
