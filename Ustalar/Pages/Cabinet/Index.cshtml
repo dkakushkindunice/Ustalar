@@ -1,8 +1,112 @@
-@page
+@page "/cabinet"
 @model Ustalar.Pages.Cabinet.IndexModel
 @{
-    ViewData["Title"] = "Личный кабинет";
+    ViewData["Title"] = "Kabinet — Ustalar.az";
 }
 
-<h1>Личный кабинет</h1>
-<p>Добро пожаловать, @User.Identity!.Name</p>
+<div class="max-w-2xl mx-auto mt-10 px-4 pb-16">
+
+    @if (Model.Master.Status == Ustalar.Models.MasterStatus.Pending)
+    {
+        <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg px-4 py-3 mb-6 text-sm">
+            Profiliniz moderasiyadadır. Təsdiqdən sonra kataloqda görünəcəksiniz.
+        </div>
+    }
+    else if (Model.Master.Status == Ustalar.Models.MasterStatus.Blocked)
+    {
+        <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-6 text-sm">
+            Profiliniz bloklanıb. Ətraflı məlumat üçün bizimlə əlaqə saxlayın.
+        </div>
+    }
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-xl font-bold text-gray-900">@Model.Master.FullName</h1>
+            <a href="/cabinet/edit"
+               class="text-sm text-orange-600 hover:text-orange-700 font-medium">Redaktə et</a>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 text-sm text-gray-600">
+            <div>
+                <span class="font-medium text-gray-700">Telefon:</span>
+                @Model.Master.Phone
+            </div>
+            <div>
+                <span class="font-medium text-gray-700">Şəhər:</span>
+                @Model.Master.City?.NameAz
+            </div>
+            @if (Model.Master.ExperienceYears.HasValue)
+            {
+                <div>
+                    <span class="font-medium text-gray-700">Təcrübə:</span>
+                    @Model.Master.ExperienceYears il
+                </div>
+            }
+            @if (Model.Master.PriceFrom.HasValue || Model.Master.PriceTo.HasValue)
+            {
+                <div>
+                    <span class="font-medium text-gray-700">Qiymət:</span>
+                    @(Model.Master.PriceFrom?.ToString("0") ?? "—") –
+                    @(Model.Master.PriceTo?.ToString("0") ?? "—") AZN
+                </div>
+            }
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Master.About))
+        {
+            <p class="mt-4 text-sm text-gray-600">@Model.Master.About</p>
+        }
+
+        @if (Model.Master.MasterSpecializations.Any())
+        {
+            <div class="mt-4 flex flex-wrap gap-2">
+                @foreach (var ms in Model.Master.MasterSpecializations)
+                {
+                    <span class="bg-orange-50 text-orange-700 text-xs px-3 py-1 rounded-full">
+                        @ms.Specialization.NameAz
+                    </span>
+                }
+            </div>
+        }
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="font-semibold text-gray-900">Portfolio</h2>
+            <a href="/cabinet/photos/upload"
+               class="text-sm bg-orange-600 hover:bg-orange-700 text-white px-3 py-1.5 rounded-lg transition">
+                + Foto əlavə et
+            </a>
+        </div>
+
+        @if (!Model.Master.PortfolioPhotos.Any())
+        {
+            <p class="text-sm text-gray-400">Hələ foto yoxdur</p>
+        }
+        else
+        {
+            <div class="grid grid-cols-3 gap-2">
+                @foreach (var photo in Model.Master.PortfolioPhotos)
+                {
+                    <div class="relative aspect-square">
+                        <img src="@photo.ThumbnailUrl" alt="Portfolio"
+                             class="w-full h-full object-cover rounded-lg" loading="lazy" />
+                        @if (!photo.IsApproved)
+                        {
+                            <span class="absolute top-1 left-1 bg-yellow-400 text-yellow-900 text-xs px-1.5 py-0.5 rounded">
+                                Gözləyir
+                            </span>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <form method="post" asp-page-handler="Logout" class="mt-6">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="text-sm text-gray-400 hover:text-red-500 transition">
+            Çıxış
+        </button>
+    </form>
+</div>

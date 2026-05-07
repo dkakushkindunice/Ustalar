@@ -1,0 +1,75 @@
+@model Ustalar.Pages.Masters.IndexModel
+
+@if (!Model.Masters.Any())
+{
+    <div class="text-center py-16 text-gray-400">
+        <p class="text-lg">Usta tapılmadı</p>
+        <p class="text-sm mt-1">Filtri dəyişdirin</p>
+    </div>
+}
+else
+{
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        @foreach (var master in Model.Masters)
+        {
+            <a href="/masters/@master.City?.Slug/@(master.MasterSpecializations.FirstOrDefault()?.Specialization?.Slug ?? "usta")/@master.Id"
+               class="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition p-4 flex flex-col">
+
+                <div class="w-16 h-16 rounded-full bg-gray-100 mb-3 overflow-hidden flex-shrink-0">
+                    @if (!string.IsNullOrEmpty(master.AvatarUrl))
+                    {
+                        <img src="@master.AvatarUrl" alt="@master.FullName"
+                             class="w-full h-full object-cover" loading="lazy" />
+                    }
+                    else
+                    {
+                        <div class="w-full h-full flex items-center justify-center text-2xl text-gray-300">
+                            👤
+                        </div>
+                    }
+                </div>
+
+                <h3 class="font-semibold text-gray-900 text-sm">@master.FullName</h3>
+
+                <p class="text-xs text-gray-400 mt-0.5">@master.City?.NameAz</p>
+
+                @if (master.MasterSpecializations.Any())
+                {
+                    <div class="flex flex-wrap gap-1 mt-2">
+                        @foreach (var ms in master.MasterSpecializations.Take(2))
+                        {
+                            <span class="bg-orange-50 text-orange-700 text-xs px-2 py-0.5 rounded-full">
+                                @ms.Specialization?.NameAz
+                            </span>
+                        }
+                    </div>
+                }
+
+                @if (master.PriceFrom.HasValue || master.PriceTo.HasValue)
+                {
+                    <p class="text-xs text-gray-500 mt-auto pt-3">
+                        @(master.PriceFrom?.ToString("0") ?? "—") –
+                        @(master.PriceTo?.ToString("0") ?? "—") AZN
+                    </p>
+                }
+            </a>
+        }
+    </div>
+
+    <!-- Пагинация -->
+    @if (Model.TotalPages > 1)
+    {
+        <div class="flex justify-center gap-2 mt-8">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <button hx-get="/masters"
+                        hx-target="#masters-list"
+                        hx-include="#filter-city,#filter-spec"
+                        hx-vals='{"page": "@i"}'
+                        class="@(i == Model.CurrentPage ? "bg-orange-600 text-white" : "bg-white text-gray-600 border border-gray-300 hover:bg-orange-50") w-9 h-9 rounded-lg text-sm font-medium transition">
+                    @i
+                </button>
+            }
+        </div>
+    }
+}

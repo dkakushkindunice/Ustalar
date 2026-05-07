@@ -407,7 +407,7 @@
         "Шаг 4: Мастер со status=pending видит сообщение об ожидании модерации"
       ],
       "dependencies": ["TASK-018"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-020",
@@ -471,7 +471,7 @@
         "Шаг 4: SELECT status FROM masters WHERE id IN (...)  — все отображаемые мастера active"
       ],
       "dependencies": ["TASK-005", "TASK-008"],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "TASK-023",

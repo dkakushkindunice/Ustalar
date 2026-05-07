@@ -36,6 +36,14 @@
 **Summary:** Program.cs обновлён: UseAntiforgery() добавлен в pipeline. AddRateLimiter() с двумя политиками: "sms" (3 req / 10 мин по IP) и "reviews" (2 req / час по IP), RejectionStatusCode=429. Создан Services/RateLimitPolicies.cs с константами. dotnet build: 0 ошибок.
 **Проблемы:** Была взята раньше TASK-005 — ошибка приоритизации (TASK-005 разблокирует цепочку TASK-010/011/016).
 
+### [2026-05-07] TASK-019 — Личный кабинет мастера
+**Статус:** done
+**Summary:** Pages/Cabinet/Index.cshtml — показывает профиль, статус (pending/blocked баннер), специализации, портфолио. Pages/Cabinet/Edit.cshtml — редактирование About, Whatsapp, ExperienceYears, PriceFrom, PriceTo с сохранением UpdatedAt. Оба [Authorize(MasterCookie)], logout через OnPostLogoutAsync. dotnet build: 0 ошибок.
+
+### [2026-05-07] TASK-022 — Каталог мастеров с HTMX-фильтрацией
+**Статус:** done
+**Summary:** Pages/Masters/Index.cshtml — фильтры по городу и специализации через hx-get. Pages/Masters/_MastersList.cshtml — partial с карточками (аватар, имя, город, специализации, цена) и пагинацией. IndexModel: AsNoTracking(), Skip/Take, фильтр WHERE status=Active, HTMX-детект через Request.IsHtmx() → return Partial. HtmxExtensions.cs создан. dotnet build: 0 ошибок.
+
 ### [2026-05-07] TASK-016 — Регистрация Шаг 1: телефон + SMS
 **Статус:** done
 **Summary:** Pages/Register/Index.cshtml — форма с телефоном (+994 валидация regex). POST /register: если мастер уже есть — SignInAsync → /cabinet, иначе SmsVerificationService.SendCodeAsync → TempData["RegisterPhone"] → /register/step2. [EnableRateLimiting(Sms)].

@@ -1,0 +1,53 @@
+@page "/cabinet/edit"
+@model Ustalar.Pages.Cabinet.EditModel
+@{
+    ViewData["Title"] = "Profili redaktə et — Ustalar.az";
+}
+
+<div class="max-w-xl mx-auto mt-10 px-4 pb-16">
+    <div class="flex items-center gap-3 mb-8">
+        <a href="/cabinet" class="text-gray-400 hover:text-gray-600">← Geri</a>
+        <h1 class="text-xl font-bold text-gray-900">Profili redaktə et</h1>
+    </div>
+
+    <form method="post" class="space-y-5 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        @Html.AntiForgeryToken()
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Özünüz haqqında</label>
+            <textarea asp-for="Input.About" rows="4"
+                      class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      placeholder="Təcrübəniz, xidmətləriniz haqqında yazın..."></textarea>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp</label>
+            <input asp-for="Input.Whatsapp" type="tel" placeholder="+994501234567"
+                   class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-500" />
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Təcrübə (il)</label>
+            <input asp-for="Input.ExperienceYears" type="number" min="0" max="60"
+                   class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-500" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Qiymət min (AZN)</label>
+                <input asp-for="Input.PriceFrom" type="number" min="0"
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-500" />
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Qiymət max (AZN)</label>
+                <input asp-for="Input.PriceTo" type="number" min="0"
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-500" />
+            </div>
+        </div>
+
+        <button type="submit"
+                class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg px-4 py-3 transition">
+            Yadda saxla
+        </button>
+    </form>
+</div>
