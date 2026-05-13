@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Ustalar.Data;
 using Ustalar.Models;
 using Ustalar.Services;
@@ -15,6 +16,7 @@ public class UploadModel : PageModel
     private readonly ApplicationDbContext _db;
     private readonly ImageProcessingService _imaging;
     private readonly IFileStorageService _storage;
+    private readonly IStringLocalizer<SharedResource> _localizer;
 
     public string? ErrorMessage { get; set; }
     public int PhotoCount { get; set; }
@@ -22,11 +24,13 @@ public class UploadModel : PageModel
     public UploadModel(
         ApplicationDbContext db,
         ImageProcessingService imaging,
-        IFileStorageService storage)
+        IFileStorageService storage,
+        IStringLocalizer<SharedResource> localizer)
     {
         _db = db;
         _imaging = imaging;
         _storage = storage;
+        _localizer = localizer;
     }
 
     public async Task OnGetAsync()
@@ -42,13 +46,13 @@ public class UploadModel : PageModel
 
         if (PhotoCount >= 10)
         {
-            ErrorMessage = "Maksimum 10 foto limitinə çatmısınız.";
+            ErrorMessage = _localizer["MaxPhotoLimit"];
             return Page();
         }
 
         if (photo == null || photo.Length == 0)
         {
-            ErrorMessage = "Zəhmət olmasa şəkil seçin.";
+            ErrorMessage = _localizer["PhotoRequired"];
             return Page();
         }
 

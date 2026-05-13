@@ -102,6 +102,13 @@
   <data name="EditProfile" xml:space="preserve"><value>Profili redaktə et</value></data>
   <data name="AddPhoto" xml:space="preserve"><value>+ Foto əlavə et</value></data>
   <data name="NoPhotos" xml:space="preserve"><value>Hələ foto yoxdur</value></data>
+  <data name="UploadPhotoTitle" xml:space="preserve"><value>Portfolio fotosunu yüklə</value></data>
+  <data name="PhotoLabel" xml:space="preserve"><value>Şəkil (JPEG, PNG, WebP · max 10 MB)</value></data>
+  <data name="DescriptionOptional" xml:space="preserve"><value>Açıqlama (istəyə bağlı)</value></data>
+  <data name="DescriptionPlaceholderUpload" xml:space="preserve"><value>Nə işi icra etdiniz?</value></data>
+  <data name="MaxPhotosWarning" xml:space="preserve"><value>Maksimum 10 foto yükləmişsiniz. Yeni foto əlavə etmək üçün əvvəlcə birini silin.</value></data>
+  <data name="MaxPhotoLimit" xml:space="preserve"><value>Maksimum 10 foto limitinə çatmısınız.</value></data>
+  <data name="PhotoRequired" xml:space="preserve"><value>Zəhmət olmasa şəkil seçin.</value></data>
   <data name="Pending" xml:space="preserve"><value>Gözləyir</value></data>
   <data name="ProfilePending" xml:space="preserve"><value>Profiliniz moderasiyadadır. Təsdiqdən sonra kataloqda görünəcəksiniz.</value></data>
   <data name="ProfileBlocked" xml:space="preserve"><value>Profiliniz bloklanıb. Ətraflı məlumat üçün bizimlə əlaqə saxlayın.</value></data>

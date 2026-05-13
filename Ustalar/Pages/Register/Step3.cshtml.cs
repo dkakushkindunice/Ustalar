@@ -7,6 +7,7 @@ using Ustalar.Data;
 using Ustalar.Models;
 using Ustalar.Services;
 using Microsoft.EntityFrameworkCore;
+using Ustalar.Helpers;
 
 namespace Ustalar.Pages.Register;
 
@@ -131,12 +132,10 @@ public class Step3Model : PageModel
 
     private async Task LoadSelectListsAsync()
     {
-        var culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-
         var cities = await _db.Cities.AsNoTracking().OrderBy(c => c.NameAz).ToListAsync();
-        Cities = cities.Select(c => new SelectListItem(c.NameAz, c.Id.ToString())).ToList();
+        Cities = cities.Select(c => new SelectListItem(c.GetName(), c.Id.ToString())).ToList();
 
         var specs = await _db.Specializations.AsNoTracking().OrderBy(s => s.NameAz).ToListAsync();
-        Specializations = specs.Select(s => new SelectListItem(s.NameAz, s.Id.ToString())).ToList();
+        Specializations = specs.Select(s => new SelectListItem(s.GetName(), s.Id.ToString())).ToList();
     }
 }

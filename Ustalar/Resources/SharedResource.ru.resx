@@ -102,6 +102,13 @@
   <data name="EditProfile" xml:space="preserve"><value>Редактировать профиль</value></data>
   <data name="AddPhoto" xml:space="preserve"><value>+ Добавить фото</value></data>
   <data name="NoPhotos" xml:space="preserve"><value>Фото пока нет</value></data>
+  <data name="UploadPhotoTitle" xml:space="preserve"><value>Загрузить фото в портфолио</value></data>
+  <data name="PhotoLabel" xml:space="preserve"><value>Фото (JPEG, PNG, WebP · макс 10 МБ)</value></data>
+  <data name="DescriptionOptional" xml:space="preserve"><value>Описание (необязательно)</value></data>
+  <data name="DescriptionPlaceholderUpload" xml:space="preserve"><value>Что вы сделали?</value></data>
+  <data name="MaxPhotosWarning" xml:space="preserve"><value>Вы загрузили максимум 10 фото. Удалите одно, чтобы добавить новое.</value></data>
+  <data name="MaxPhotoLimit" xml:space="preserve"><value>Вы достигли лимита в 10 фото.</value></data>
+  <data name="PhotoRequired" xml:space="preserve"><value>Пожалуйста, выберите фото.</value></data>
   <data name="Pending" xml:space="preserve"><value>На проверке</value></data>
   <data name="ProfilePending" xml:space="preserve"><value>Ваш профиль на модерации. После подтверждения вы появитесь в каталоге.</value></data>
   <data name="ProfileBlocked" xml:space="preserve"><value>Ваш профиль заблокирован. Для получения информации свяжитесь с нами.</value></data>

@@ -1,16 +1,17 @@
 @page "/cabinet/photos/upload"
 @model Ustalar.Pages.Cabinet.Photos.UploadModel
 @{
-    ViewData["Title"] = "Foto yüklə — Ustalar.az";
+    Layout = "_Layout";
+    ViewData["Title"] = Localizer["UploadPhotoTitle"] + " — Ustalar.az";
 }
 
 <div class="max-w-xl mx-auto mt-10 px-4 pb-16">
     <div class="mb-6">
-        <a href="/cabinet" class="text-sm text-gray-500 hover:text-gray-700">← Kabinet</a>
+        <a href="/cabinet" class="text-sm text-gray-500 hover:text-gray-700">← @Localizer["Cabinet"]</a>
     </div>
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <h1 class="text-lg font-bold text-gray-900 mb-4">Portfolio fotosunu yüklə</h1>
+        <h1 class="text-lg font-bold text-gray-900 mb-4">@Localizer["UploadPhotoTitle"]</h1>
 
         @if (!string.IsNullOrEmpty(Model.ErrorMessage))
         {
@@ -22,7 +23,7 @@
         @if (Model.PhotoCount >= 10)
         {
             <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg px-4 py-3 text-sm">
-                Maksimum 10 foto yükləmişsiniz. Yeni foto əlavə etmək üçün əvvəlcə birini silin.
+                @Localizer["MaxPhotosWarning"]
             </div>
         }
         else
@@ -32,7 +33,7 @@
 
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Şəkil (JPEG, PNG, WebP · max 10 MB)
+                        @Localizer["PhotoLabel"]
                     </label>
                     <input type="file" name="Photo" accept="image/jpeg,image/png,image/webp"
                            required
@@ -43,10 +44,10 @@
 
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Açıqlama (istəyə bağlı)
+                        @Localizer["DescriptionOptional"]
                     </label>
                     <input type="text" name="Description" maxlength="200"
-                           placeholder="Nə işi icra etdiniz?"
+                           placeholder="@Localizer["DescriptionPlaceholderUpload"]"
                            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
                                   focus:outline-none focus:ring-2 focus:ring-orange-500" />
                 </div>
@@ -54,7 +55,7 @@
                 <button type="submit"
                         class="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium
                                py-2.5 rounded-lg transition text-sm">
-                    Yüklə
+                    @Localizer["Upload"]
                 </button>
             </form>
         }
