@@ -1,3 +1,3 @@
-namespace Ustalar.Resources;
+namespace Ustalar;
 
-public class SharedResource { }
+public class SharedResource { } 

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -23,7 +24,7 @@ public class Step3Model : PageModel
     [BindProperty]
     public InputModel Input { get; set; } = new();
 
-    public List<SelectListItem> Cities { get; set; } = [];
+    public List<SelectListItem> Cities { get; set; } = []; 
     public List<SelectListItem> Specializations { get; set; } = [];
     public string? ErrorMessage { get; set; }
 
@@ -130,6 +131,8 @@ public class Step3Model : PageModel
 
     private async Task LoadSelectListsAsync()
     {
+        var culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+
         var cities = await _db.Cities.AsNoTracking().OrderBy(c => c.NameAz).ToListAsync();
         Cities = cities.Select(c => new SelectListItem(c.NameAz, c.Id.ToString())).ToList();
 

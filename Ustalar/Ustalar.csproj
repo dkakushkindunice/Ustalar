@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="Resources\SharedResource.az.resx" CopyToPublishDirectory="Always" />
+    <Content Include="Resources\SharedResource.ru.resx" CopyToPublishDirectory="Always" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.414.1" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />

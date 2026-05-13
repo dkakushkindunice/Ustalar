@@ -1,6 +1,7 @@
 @page "/masters/{citySlug}/{specSlug}"
 @model Ustalar.Pages.Masters.CitySpecModel
 @{
+    Layout = "_Layout";
     ViewData["Title"] = $"{Model.CurrentSpec?.GetName()} — {Model.CurrentCity?.GetName()} — Ustalar.az";
 }
 

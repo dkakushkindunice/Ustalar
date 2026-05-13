@@ -2,6 +2,8 @@ using System.IO.Compression;
 using System.Threading.RateLimiting;
 using Amazon.Runtime;
 using Amazon.S3;
+using Microsoft.Extensions.Localization;
+using Ustalar;
 using Ustalar.Data;
 using Ustalar.Services;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -102,7 +104,8 @@ builder.Services.Configure<GzipCompressionProviderOptions>(o => o.Level = Compre
 builder.Services.AddHostedService<SmsCleanupService>();
 
 // Localization AZ (default) + RU
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.AddLocalization();
+builder.Services.AddSingleton<IStringLocalizer<SharedResource>, ResxLocalizer>();
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     var supported = new[] { "az", "ru" };

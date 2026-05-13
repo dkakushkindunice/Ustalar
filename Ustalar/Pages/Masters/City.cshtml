@@ -1,6 +1,7 @@
 @page "/masters/{citySlug}"
 @model Ustalar.Pages.Masters.CityModel
 @{
+    Layout = "_Layout";
     ViewData["Title"] = $"{Model.CurrentCity?.GetName() ?? Localizer["Masters"].Value} — Ustalar.az";
 }
 
