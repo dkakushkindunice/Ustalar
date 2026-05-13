@@ -1,7 +1,7 @@
 @page "/masters/{citySlug}/{specSlug}"
 @model Ustalar.Pages.Masters.CitySpecModel
 @{
-    ViewData["Title"] = $"{Model.CurrentSpec?.NameAz} — {Model.CurrentCity?.NameAz} — Ustalar.az";
+    ViewData["Title"] = $"{Model.CurrentSpec?.GetName()} — {Model.CurrentCity?.GetName()} — Ustalar.az";
 }
 
 @section Head {
@@ -10,15 +10,15 @@
 
 <div class="max-w-7xl mx-auto px-4 py-8">
     <nav class="text-sm text-gray-400 mb-4 flex gap-1 items-center">
-        <a href="/masters" class="hover:text-orange-600">Ustalar</a>
+        <a href="/masters" class="hover:text-orange-600">@Localizer["Masters"]</a>
         <span>›</span>
-        <a href="/masters/@Model.CurrentCity?.Slug" class="hover:text-orange-600">@Model.CurrentCity?.NameAz</a>
+        <a href="/masters/@Model.CurrentCity?.Slug" class="hover:text-orange-600">@Model.CurrentCity?.GetName()</a>
         <span>›</span>
-        <span class="text-gray-700">@Model.CurrentSpec?.NameAz</span>
+        <span class="text-gray-700">@Model.CurrentSpec?.GetName()</span>
     </nav>
 
     <h1 class="text-2xl font-bold text-gray-900 mb-6">
-        @Model.CurrentCity?.NameAz — @Model.CurrentSpec?.NameAz
+        @Model.CurrentCity?.GetName() — @Model.CurrentSpec?.GetName()
     </h1>
 
     <div id="masters-list">

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="az">
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,16 +17,24 @@
     <header class="bg-white border-b border-gray-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             <a href="/" class="text-xl font-bold text-orange-600">Ustalar.az</a>
-            <nav class="flex gap-4 text-sm">
-                <a href="/masters" class="text-gray-600 hover:text-orange-600">Ustalar</a>
+            <nav class="flex gap-4 text-sm items-center">
+                <a href="/masters" class="text-gray-600 hover:text-orange-600">@Localizer["Masters"]</a>
                 @if (User.Identity?.IsAuthenticated == true && User.Identity.AuthenticationType == "MasterCookie")
                 {
-                    <a href="/cabinet" class="text-gray-600 hover:text-orange-600">Kabinet</a>
+                    <a href="/cabinet" class="text-gray-600 hover:text-orange-600">@Localizer["Cabinet"]</a>
                 }
                 else
                 {
-                    <a href="/register" class="text-gray-600 hover:text-orange-600">Qeydiyyat</a>
+                    <a href="/register" class="text-gray-600 hover:text-orange-600">@Localizer["Register"]</a>
                 }
+                @{
+                    var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+                    var returnUrl = Uri.EscapeDataString(Context.Request.Path);
+                }
+                <div class="flex gap-1 text-xs border border-gray-200 rounded-lg overflow-hidden">
+                    <a href="/culture/set?culture=az&returnUrl=@returnUrl" class="px-2 py-1 @(currentCulture == "az" ? "bg-orange-600 text-white" : "text-gray-500 hover:bg-gray-50")">AZ</a>
+                    <a href="/culture/set?culture=ru&returnUrl=@returnUrl" class="px-2 py-1 @(currentCulture == "ru" ? "bg-orange-600 text-white" : "text-gray-500 hover:bg-gray-50")">RU</a>
+                </div>
             </nav>
         </div>
     </header>

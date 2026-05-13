@@ -22,52 +22,101 @@
   <resheader name="version">
     <value>2.0</value>
   </resheader>
-  <data name="Masters" xml:space="preserve">
-    <value>Мастера</value>
-  </data>
-  <data name="Register" xml:space="preserve">
-    <value>Регистрация</value>
-  </data>
-  <data name="Cabinet" xml:space="preserve">
-    <value>Кабинет</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Поиск</value>
-  </data>
-  <data name="City" xml:space="preserve">
-    <value>Город</value>
-  </data>
-  <data name="Specialization" xml:space="preserve">
-    <value>Специализация</value>
-  </data>
-  <data name="Experience" xml:space="preserve">
-    <value>Опыт</value>
-  </data>
-  <data name="Price" xml:space="preserve">
-    <value>Цена</value>
-  </data>
-  <data name="Reviews" xml:space="preserve">
-    <value>Отзывы</value>
-  </data>
-  <data name="Phone" xml:space="preserve">
-    <value>Телефон</value>
-  </data>
-  <data name="Save" xml:space="preserve">
-    <value>Сохранить</value>
-  </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Отмена</value>
-  </data>
-  <data name="Delete" xml:space="preserve">
-    <value>Удалить</value>
-  </data>
-  <data name="Upload" xml:space="preserve">
-    <value>Загрузить</value>
-  </data>
-  <data name="VerifiedMaster" xml:space="preserve">
-    <value>Проверенный мастер</value>
-  </data>
-  <data name="YearsExp" xml:space="preserve">
-    <value>лет опыта</value>
-  </data>
+
+  <!-- Nav -->
+  <data name="Masters" xml:space="preserve"><value>Мастера</value></data>
+  <data name="Register" xml:space="preserve"><value>Регистрация</value></data>
+  <data name="Cabinet" xml:space="preserve"><value>Кабинет</value></data>
+
+  <!-- Common -->
+  <data name="Search" xml:space="preserve"><value>Поиск</value></data>
+  <data name="City" xml:space="preserve"><value>Город</value></data>
+  <data name="Specialization" xml:space="preserve"><value>Специализация</value></data>
+  <data name="Experience" xml:space="preserve"><value>Опыт</value></data>
+  <data name="Price" xml:space="preserve"><value>Цена</value></data>
+  <data name="Reviews" xml:space="preserve"><value>Отзывы</value></data>
+  <data name="Phone" xml:space="preserve"><value>Телефон</value></data>
+  <data name="Save" xml:space="preserve"><value>Сохранить</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="Delete" xml:space="preserve"><value>Удалить</value></data>
+  <data name="Upload" xml:space="preserve"><value>Загрузить</value></data>
+  <data name="VerifiedMaster" xml:space="preserve"><value>Проверенный мастер</value></data>
+  <data name="YearsExp" xml:space="preserve"><value>лет опыта</value></data>
+  <data name="Loading" xml:space="preserve"><value>Загрузка...</value></data>
+  <data name="BackToHome" xml:space="preserve"><value>На главную</value></data>
+  <data name="Rating" xml:space="preserve"><value>Рейтинг</value></data>
+  <data name="Portfolio" xml:space="preserve"><value>Портфолио</value></data>
+  <data name="Contact" xml:space="preserve"><value>Контакт</value></data>
+  <data name="About" xml:space="preserve"><value>О себе</value></data>
+  <data name="FullName" xml:space="preserve"><value>Имя Фамилия</value></data>
+  <data name="Back" xml:space="preserve"><value>← Назад</value></data>
+  <data name="Avatar" xml:space="preserve"><value>Аватар</value></data>
+  <data name="Logout" xml:space="preserve"><value>Выйти</value></data>
+
+  <!-- Index -->
+  <data name="HeroTitle" xml:space="preserve"><value>Профессиональные мастера в Азербайджане</value></data>
+  <data name="HeroSubtitle" xml:space="preserve"><value>Электрик, сантехник, штукатур, плотник — все строительные услуги в одном месте</value></data>
+  <data name="SelectSpec" xml:space="preserve"><value>Выберите специализацию</value></data>
+  <data name="PopularSpecs" xml:space="preserve"><value>Популярные специализации</value></data>
+  <data name="VerifiedMasters" xml:space="preserve"><value>Проверенные мастера</value></data>
+  <data name="AllMasters" xml:space="preserve"><value>Все мастера</value></data>
+
+  <!-- Masters catalog -->
+  <data name="MastersCatalog" xml:space="preserve"><value>Каталог мастеров</value></data>
+  <data name="AllCities" xml:space="preserve"><value>Все города</value></data>
+  <data name="AllSpecs" xml:space="preserve"><value>Все специализации</value></data>
+  <data name="MasterNotFound" xml:space="preserve"><value>Мастеров не найдено</value></data>
+  <data name="ChangeFilter" xml:space="preserve"><value>Измените фильтр</value></data>
+
+  <!-- Profile -->
+  <data name="WriteReview" xml:space="preserve"><value>Написать отзыв</value></data>
+  <data name="ContactWhatsApp" xml:space="preserve"><value>Написать в WhatsApp</value></data>
+  <data name="Call" xml:space="preserve"><value>Позвонить</value></data>
+  <data name="MentionSite" xml:space="preserve"><value>При звонке скажите, что нашли на Ustalar.az</value></data>
+  <data name="NoReviews" xml:space="preserve"><value>Отзывов пока нет</value></data>
+
+  <!-- Register -->
+  <data name="RegisterAsMaster" xml:space="preserve"><value>Регистрация мастера</value></data>
+  <data name="PhoneSubtitle" xml:space="preserve"><value>Введите номер, мы отправим SMS</value></data>
+  <data name="PhoneNumber" xml:space="preserve"><value>Номер телефона</value></data>
+  <data name="SendSms" xml:space="preserve"><value>Отправить SMS</value></data>
+  <data name="EnterCode" xml:space="preserve"><value>Введите SMS-код</value></data>
+  <data name="SentCodeTo" xml:space="preserve"><value>на номер отправлен 6-значный код</value></data>
+  <data name="SmsCode" xml:space="preserve"><value>SMS-код</value></data>
+  <data name="Confirm" xml:space="preserve"><value>Подтвердить</value></data>
+  <data name="ResendCode" xml:space="preserve"><value>Отправить код повторно</value></data>
+  <data name="CreateProfile" xml:space="preserve"><value>Создать профиль</value></data>
+  <data name="ProfileSubtitle" xml:space="preserve"><value>Эта информация будет видна заказчикам</value></data>
+  <data name="SelectCity" xml:space="preserve"><value>— Выберите город —</value></data>
+  <data name="Specializations" xml:space="preserve"><value>Специализации</value></data>
+  <data name="CanSelectMultiple" xml:space="preserve"><value>можно выбрать несколько</value></data>
+  <data name="AboutPlaceholder" xml:space="preserve"><value>Напишите о вашем опыте и услугах...</value></data>
+  <data name="ExperienceYears" xml:space="preserve"><value>Опыт (лет)</value></data>
+  <data name="PriceMin" xml:space="preserve"><value>Цена (AZN, мин)</value></data>
+  <data name="PriceMax" xml:space="preserve"><value>Цена (AZN, макс)</value></data>
+  <data name="PriceMinShort" xml:space="preserve"><value>Цена мин (AZN)</value></data>
+  <data name="PriceMaxShort" xml:space="preserve"><value>Цена макс (AZN)</value></data>
+
+  <!-- Cabinet -->
+  <data name="Edit" xml:space="preserve"><value>Редактировать</value></data>
+  <data name="EditProfile" xml:space="preserve"><value>Редактировать профиль</value></data>
+  <data name="AddPhoto" xml:space="preserve"><value>+ Добавить фото</value></data>
+  <data name="NoPhotos" xml:space="preserve"><value>Фото пока нет</value></data>
+  <data name="Pending" xml:space="preserve"><value>На проверке</value></data>
+  <data name="ProfilePending" xml:space="preserve"><value>Ваш профиль на модерации. После подтверждения вы появитесь в каталоге.</value></data>
+  <data name="ProfileBlocked" xml:space="preserve"><value>Ваш профиль заблокирован. Для получения информации свяжитесь с нами.</value></data>
+  <data name="DeletePhotoConfirm" xml:space="preserve"><value>Удалить фото?</value></data>
+
+  <!-- Reviews form -->
+  <data name="YourName" xml:space="preserve"><value>Ваше имя</value></data>
+  <data name="Comment" xml:space="preserve"><value>Комментарий</value></data>
+  <data name="CommentPlaceholder" xml:space="preserve"><value>Напишите о работе мастера...</value></data>
+  <data name="SendReview" xml:space="preserve"><value>Оставить отзыв</value></data>
+  <data name="ReviewSent" xml:space="preserve"><value>Ваш отзыв отправлен. Будет опубликован после модерации.</value></data>
+
+  <!-- Errors -->
+  <data name="PageNotFound" xml:space="preserve"><value>Страница не найдена</value></data>
+  <data name="PageNotFoundMsg" xml:space="preserve"><value>Запрашиваемая страница не существует или была удалена.</value></data>
+  <data name="ErrorOccurred" xml:space="preserve"><value>Произошла ошибка</value></data>
+  <data name="ErrorMsg" xml:space="preserve"><value>Произошла техническая ошибка. Попробуйте позже.</value></data>
 </root>

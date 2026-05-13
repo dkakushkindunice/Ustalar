@@ -3,8 +3,8 @@
 @if (!Model.Masters.Any())
 {
     <div class="text-center py-16 text-gray-400">
-        <p class="text-lg">Usta tapılmadı</p>
-        <p class="text-sm mt-1">Filtri dəyişdirin</p>
+        <p class="text-lg">@Localizer["MasterNotFound"]</p>
+        <p class="text-sm mt-1">@Localizer["ChangeFilter"]</p>
     </div>
 }
 else
@@ -31,7 +31,7 @@ else
                 </div>
 
                 <h3 class="font-semibold text-gray-900 text-sm">@master.FullName</h3>
-                <p class="text-xs text-gray-400 mt-0.5">@master.City?.NameAz</p>
+                <p class="text-xs text-gray-400 mt-0.5">@master.City?.GetName()</p>
 
                 @if (master.MasterSpecializations.Any())
                 {
@@ -39,7 +39,7 @@ else
                         @foreach (var ms in master.MasterSpecializations.Take(2))
                         {
                             <span class="bg-orange-50 text-orange-700 text-xs px-2 py-0.5 rounded-full">
-                                @ms.Specialization?.NameAz
+                                @ms.Specialization?.GetName()
                             </span>
                         }
                     </div>

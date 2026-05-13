@@ -1,7 +1,7 @@
 @page "/masters/{citySlug}"
 @model Ustalar.Pages.Masters.CityModel
 @{
-    ViewData["Title"] = $"{Model.CurrentCity?.NameAz ?? "Ustalar"} — Ustalar.az";
+    ViewData["Title"] = $"{Model.CurrentCity?.GetName() ?? Localizer["Masters"].Value} — Ustalar.az";
 }
 
 @section Head {
@@ -10,20 +10,20 @@
 
 <div class="max-w-7xl mx-auto px-4 py-8">
     <nav class="text-sm text-gray-400 mb-4 flex gap-1 items-center">
-        <a href="/masters" class="hover:text-orange-600">Ustalar</a>
+        <a href="/masters" class="hover:text-orange-600">@Localizer["Masters"]</a>
         <span>›</span>
-        <span class="text-gray-700">@Model.CurrentCity?.NameAz</span>
+        <span class="text-gray-700">@Model.CurrentCity?.GetName()</span>
     </nav>
 
-    <h1 class="text-2xl font-bold text-gray-900 mb-6">@Model.CurrentCity?.NameAz — ustalar</h1>
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">@Model.CurrentCity?.GetName() — @Localizer["Masters"]</h1>
 
     <div class="flex flex-wrap gap-3 mb-6">
         <select onchange="if(this.value) window.location='/masters/@Model.CurrentCity?.Slug/'+this.value"
                 class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
-            <option value="">Bütün ixtisaslar</option>
+            <option value="">@Localizer["AllSpecs"]</option>
             @foreach (var spec in Model.Catalog.Specializations)
             {
-                <option value="@spec.Slug">@spec.NameAz</option>
+                <option value="@spec.Slug">@spec.GetName()</option>
             }
         </select>
     </div>

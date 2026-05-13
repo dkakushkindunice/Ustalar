@@ -1,7 +1,7 @@
 @page "/cabinet"
 @model Ustalar.Pages.Cabinet.IndexModel
 @{
-    ViewData["Title"] = "Kabinet — Ustalar.az";
+    ViewData["Title"] = Localizer["Cabinet"] + " — Ustalar.az";
 }
 
 <div class="max-w-2xl mx-auto mt-10 px-4 pb-16">
@@ -9,13 +9,13 @@
     @if (Model.Master.Status == Ustalar.Models.MasterStatus.Pending)
     {
         <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg px-4 py-3 mb-6 text-sm">
-            Profiliniz moderasiyadadır. Təsdiqdən sonra kataloqda görünəcəksiniz.
+            @Localizer["ProfilePending"]
         </div>
     }
     else if (Model.Master.Status == Ustalar.Models.MasterStatus.Blocked)
     {
         <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-6 text-sm">
-            Profiliniz bloklanıb. Ətraflı məlumat üçün bizimlə əlaqə saxlayın.
+            @Localizer["ProfileBlocked"]
         </div>
     }
 
@@ -23,29 +23,29 @@
         <div class="flex items-center justify-between mb-4">
             <h1 class="text-xl font-bold text-gray-900">@Model.Master.FullName</h1>
             <a href="/cabinet/edit"
-               class="text-sm text-orange-600 hover:text-orange-700 font-medium">Redaktə et</a>
+               class="text-sm text-orange-600 hover:text-orange-700 font-medium">@Localizer["Edit"]</a>
         </div>
 
         <div class="grid grid-cols-2 gap-4 text-sm text-gray-600">
             <div>
-                <span class="font-medium text-gray-700">Telefon:</span>
+                <span class="font-medium text-gray-700">@Localizer["Phone"]:</span>
                 @Model.Master.Phone
             </div>
             <div>
-                <span class="font-medium text-gray-700">Şəhər:</span>
-                @Model.Master.City?.NameAz
+                <span class="font-medium text-gray-700">@Localizer["City"]:</span>
+                @Model.Master.City?.GetName()
             </div>
             @if (Model.Master.ExperienceYears.HasValue)
             {
                 <div>
-                    <span class="font-medium text-gray-700">Təcrübə:</span>
-                    @Model.Master.ExperienceYears il
+                    <span class="font-medium text-gray-700">@Localizer["Experience"]:</span>
+                    @Model.Master.ExperienceYears @Localizer["YearsExp"]
                 </div>
             }
             @if (Model.Master.PriceFrom.HasValue || Model.Master.PriceTo.HasValue)
             {
                 <div>
-                    <span class="font-medium text-gray-700">Qiymət:</span>
+                    <span class="font-medium text-gray-700">@Localizer["Price"]:</span>
                     @(Model.Master.PriceFrom?.ToString("0") ?? "—") –
                     @(Model.Master.PriceTo?.ToString("0") ?? "—") AZN
                 </div>
@@ -63,7 +63,7 @@
                 @foreach (var ms in Model.Master.MasterSpecializations)
                 {
                     <span class="bg-orange-50 text-orange-700 text-xs px-3 py-1 rounded-full">
-                        @ms.Specialization.NameAz
+                        @ms.Specialization.GetName()
                     </span>
                 }
             </div>
@@ -72,16 +72,16 @@
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <div class="flex items-center justify-between mb-4">
-            <h2 class="font-semibold text-gray-900">Portfolio</h2>
+            <h2 class="font-semibold text-gray-900">@Localizer["Portfolio"]</h2>
             <a href="/cabinet/photos/upload"
                class="text-sm bg-orange-600 hover:bg-orange-700 text-white px-3 py-1.5 rounded-lg transition">
-                + Foto əlavə et
+                @Localizer["AddPhoto"]
             </a>
         </div>
 
         @if (!Model.Master.PortfolioPhotos.Any())
         {
-            <p class="text-sm text-gray-400">Hələ foto yoxdur</p>
+            <p class="text-sm text-gray-400">@Localizer["NoPhotos"]</p>
         }
         else
         {
@@ -94,12 +94,12 @@
                         @if (!photo.IsApproved)
                         {
                             <span class="absolute top-1 left-1 bg-yellow-400 text-yellow-900 text-xs px-1.5 py-0.5 rounded">
-                                Gözləyir
+                                @Localizer["Pending"]
                             </span>
                         }
                         <form method="post" asp-page-handler="DeletePhoto"
                               class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition"
-                              onsubmit="return confirm('Fotoşəkili sil?')">
+                              onsubmit="return confirm('@Localizer["DeletePhotoConfirm"]')">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="photoId" value="@photo.Id" />
                             <button type="submit"
@@ -116,7 +116,7 @@
     <form method="post" asp-page-handler="Logout" class="mt-6">
         @Html.AntiForgeryToken()
         <button type="submit" class="text-sm text-gray-400 hover:text-red-500 transition">
-            Çıxış
+            @Localizer["Logout"]
         </button>
     </form>
 </div>

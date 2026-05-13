@@ -1,13 +1,13 @@
 @page "/register/step2"
 @model Ustalar.Pages.Register.Step2Model
 @{
-    ViewData["Title"] = "SMS təsdiqi — Ustalar.az";
+    ViewData["Title"] = Localizer["EnterCode"] + " — Ustalar.az";
 }
 
 <div class="max-w-md mx-auto mt-16 px-4">
-    <h1 class="text-2xl font-bold text-gray-900 mb-2">SMS kodu daxil edin</h1>
+    <h1 class="text-2xl font-bold text-gray-900 mb-2">@Localizer["EnterCode"]</h1>
     <p class="text-gray-500 mb-8">
-        <strong>@Model.Phone</strong> nömrəsinə 6 rəqəmli kod göndərdik
+        <strong>@Model.Phone</strong> @Localizer["SentCodeTo"]
     </p>
 
     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
@@ -21,7 +21,7 @@
         @Html.AntiForgeryToken()
         <input type="hidden" name="Phone" value="@Model.Phone" />
         <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">SMS kodu</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">@Localizer["SmsCode"]</label>
             <input asp-for="Code"
                    type="text"
                    inputmode="numeric"
@@ -33,10 +33,10 @@
         </div>
         <button type="submit"
                 class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg px-4 py-3 transition">
-            Təsdiq et
+            @Localizer["Confirm"]
         </button>
         <a href="/register" class="block text-center text-sm text-gray-500 hover:text-orange-600 mt-4">
-            Kodu yenidən göndər
+            @Localizer["ResendCode"]
         </a>
     </form>
 </div>

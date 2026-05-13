@@ -1,8 +1,8 @@
 @page "/masters/{citySlug}/{specSlug}/{masterId:int}"
 @model Ustalar.Pages.Masters.ProfileModel
 @{
-    ViewData["Title"] = $"{Model.Master.FullName} — {Model.Master.City?.NameAz} — Ustalar.az";
-    ViewData["Description"] = Model.Master.About ?? $"{Model.Master.FullName} — {Model.PrimarySpec?.NameAz}";
+    ViewData["Title"] = $"{Model.Master.FullName} — {Model.Master.City?.GetName()} — Ustalar.az";
+    ViewData["Description"] = Model.Master.About ?? $"{Model.Master.FullName} — {Model.PrimarySpec?.GetName()}";
 }
 
 @section Head {
@@ -18,15 +18,14 @@
 
 <div class="max-w-4xl mx-auto px-4 py-8">
 
-    <!-- Хлебные крошки -->
     <nav class="text-sm text-gray-400 mb-6 flex gap-1 items-center flex-wrap">
-        <a href="/masters" class="hover:text-orange-600">Ustalar</a>
+        <a href="/masters" class="hover:text-orange-600">@Localizer["Masters"]</a>
         <span>›</span>
-        <a href="/masters/@Model.CitySlug" class="hover:text-orange-600">@Model.Master.City?.NameAz</a>
+        <a href="/masters/@Model.CitySlug" class="hover:text-orange-600">@Model.Master.City?.GetName()</a>
         @if (Model.PrimarySpec != null)
         {
             <span>›</span>
-            <a href="/masters/@Model.CitySlug/@Model.SpecSlug" class="hover:text-orange-600">@Model.PrimarySpec.NameAz</a>
+            <a href="/masters/@Model.CitySlug/@Model.SpecSlug" class="hover:text-orange-600">@Model.PrimarySpec.GetName()</a>
         }
         <span>›</span>
         <span class="text-gray-700">@Model.Master.FullName</span>
@@ -34,7 +33,6 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-        <!-- Левая колонка: профиль -->
         <div class="md:col-span-2">
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
                 <div class="flex items-start gap-4">
@@ -54,15 +52,15 @@
                             <h1 class="text-xl font-bold text-gray-900">@Model.Master.FullName</h1>
                             @if (Model.Master.IsVerified)
                             {
-                                <span title="Təsdiqlənmiş usta" class="text-orange-500">✓</span>
+                                <span title="@Localizer["VerifiedMaster"]" class="text-orange-500">✓</span>
                             }
                         </div>
-                        <p class="text-gray-500 text-sm mt-0.5">@Model.Master.City?.NameAz</p>
+                        <p class="text-gray-500 text-sm mt-0.5">@Model.Master.City?.GetName()</p>
                         <div class="flex flex-wrap gap-1.5 mt-2">
                             @foreach (var ms in Model.Master.MasterSpecializations)
                             {
                                 <span class="bg-orange-50 text-orange-700 text-xs px-2.5 py-0.5 rounded-full">
-                                    @ms.Specialization.NameAz
+                                    @ms.Specialization.GetName()
                                 </span>
                             }
                         </div>
@@ -73,14 +71,14 @@
                     @if (Model.Master.ExperienceYears.HasValue)
                     {
                         <div>
-                            <p class="text-gray-400 text-xs">Təcrübə</p>
-                            <p class="font-medium">@Model.Master.ExperienceYears il</p>
+                            <p class="text-gray-400 text-xs">@Localizer["Experience"]</p>
+                            <p class="font-medium">@Model.Master.ExperienceYears @Localizer["YearsExp"]</p>
                         </div>
                     }
                     @if (Model.Master.PriceFrom.HasValue || Model.Master.PriceTo.HasValue)
                     {
                         <div>
-                            <p class="text-gray-400 text-xs">Qiymət</p>
+                            <p class="text-gray-400 text-xs">@Localizer["Price"]</p>
                             <p class="font-medium">
                                 @(Model.Master.PriceFrom?.ToString("0") ?? "—") –
                                 @(Model.Master.PriceTo?.ToString("0") ?? "—") AZN
@@ -90,7 +88,7 @@
                     @if (Model.ApprovedReviews.Any())
                     {
                         <div>
-                            <p class="text-gray-400 text-xs">Reytinq</p>
+                            <p class="text-gray-400 text-xs">@Localizer["Rating"]</p>
                             <p class="font-medium">
                                 ★ @Model.AverageRating.ToString("0.0")
                                 <span class="text-gray-400 font-normal">(@Model.ApprovedReviews.Count)</span>
@@ -105,17 +103,16 @@
                 }
             </div>
 
-            <!-- Портфолио -->
             @if (Model.ApprovedPhotos.Any())
             {
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-                    <h2 class="font-semibold text-gray-900 mb-4">Portfolio</h2>
+                    <h2 class="font-semibold text-gray-900 mb-4">@Localizer["Portfolio"]</h2>
                     <div class="grid grid-cols-3 gap-2">
                         @foreach (var photo in Model.ApprovedPhotos)
                         {
                             <a href="@photo.ImageUrl" class="glightbox aspect-square block overflow-hidden rounded-lg"
                                data-gallery="portfolio">
-                                <img src="@photo.ThumbnailUrl" alt="@(photo.Description ?? "Portfolio")"
+                                <img src="@photo.ThumbnailUrl" alt="@(photo.Description ?? Localizer["Portfolio"].Value)"
                                      class="w-full h-full object-cover hover:scale-105 transition" loading="lazy" />
                             </a>
                         }
@@ -123,10 +120,9 @@
                 </div>
             }
 
-            <!-- Отзывы -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
                 <h2 class="font-semibold text-gray-900 mb-4">
-                    Rəylər
+                    @Localizer["Reviews"]
                     @if (Model.ApprovedReviews.Any())
                     {
                         <span class="text-gray-400 font-normal text-sm">(@Model.ApprovedReviews.Count)</span>
@@ -135,7 +131,7 @@
 
                 @if (!Model.ApprovedReviews.Any())
                 {
-                    <p class="text-sm text-gray-400">Hələ rəy yoxdur</p>
+                    <p class="text-sm text-gray-400">@Localizer["NoReviews"]</p>
                 }
                 else
                 {
@@ -158,38 +154,36 @@
                 }
             </div>
 
-            <!-- Форма отзыва -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h2 class="font-semibold text-gray-900 mb-4">Rəy yaz</h2>
+                <h2 class="font-semibold text-gray-900 mb-4">@Localizer["WriteReview"]</h2>
                 <div hx-get="/reviews/@Model.Master.Id"
                      hx-trigger="load"
                      hx-swap="innerHTML">
-                    <p class="text-sm text-gray-400">Yüklənir...</p>
+                    <p class="text-sm text-gray-400">@Localizer["Loading"]</p>
                 </div>
             </div>
         </div>
 
-        <!-- Правая колонка: контакт -->
         <div class="md:col-span-1">
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-6">
-                <h3 class="font-semibold text-gray-900 mb-4">Əlaqə</h3>
+                <h3 class="font-semibold text-gray-900 mb-4">@Localizer["Contact"]</h3>
 
                 @if (!string.IsNullOrEmpty(Model.Master.Whatsapp))
                 {
                     <a href="https://wa.me/@(Model.Master.Whatsapp.Replace("+", "").Replace(" ", ""))"
                        target="_blank" rel="noopener"
                        class="flex items-center justify-center gap-2 w-full bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg px-4 py-3 transition mb-3">
-                        WhatsApp ilə əlaqə
+                        @Localizer["ContactWhatsApp"]
                     </a>
                 }
 
                 <a href="tel:@Model.Master.Phone"
                    class="flex items-center justify-center gap-2 w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg px-4 py-3 transition">
-                    Zəng et
+                    @Localizer["Call"]
                 </a>
 
                 <p class="text-xs text-gray-400 text-center mt-3">
-                    Nömrəni zəng edərkən Ustalar.az-dan tapdığınızı deyin
+                    @Localizer["MentionSite"]
                 </p>
             </div>
         </div>
