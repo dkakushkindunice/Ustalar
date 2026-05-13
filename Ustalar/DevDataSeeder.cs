@@ -167,5 +167,17 @@ public static class DevDataSeeder
 
         db.Reviews.AddRange(reviews);
         await db.SaveChangesAsync();
+
+        // Admin user (только если ещё нет)
+        if (!await db.AdminUsers.AnyAsync())
+        {
+            db.AdminUsers.Add(new AdminUser
+            {
+                Email = "admin@ustalar.az",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123", workFactor: 12),
+                CreatedAt = now
+            });
+            await db.SaveChangesAsync();
+        }
     }
 }

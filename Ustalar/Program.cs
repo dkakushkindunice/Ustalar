@@ -146,22 +146,21 @@ var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Shared/Error500");
+    app.UseExceptionHandler("/error/500");
     app.UseHsts();
 }
 
-app.UseStatusCodePagesWithReExecute("/Shared/Error{0}");
+app.UseStatusCodePagesWithReExecute("/error/{0}");
 app.UseRequestLocalization();
 
 app.UseResponseCompression();
-// HTTPS редирект не нужен внутри контейнера — SSL терминируется на nginx
 if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
 app.UseRateLimiter();
-app.UseAntiforgery();
+// UseAntiforgery() не нужен — Razor Pages проверяет токены через AutoValidateAntiforgeryToken
 app.UseAuthorization();
 app.MapRazorPages();
 app.MapHealthChecks("/health");

@@ -18,16 +18,28 @@ public class SmsVerificationService
 
     public async Task SendCodeAsync(string phone)
     {
-        // Инвалидируем предыдущие коды для этого номера
+        var code = await SaveCodeAsync(phone);
+        await _sms.SendVerificationCodeAsync(phone, code);
+    }
+
+    // Development: сохранить код без отправки SMS
+    public async Task SaveCodeWithoutSendingAsync(string phone) => await SaveCodeAsync(phone);
+
+    public async Task<string?> GetLastCodeAsync(string phone) =>
+        await _db.SmsVerifications
+            .Where(v => v.Phone == phone && !v.IsUsed && v.ExpiresAt > DateTime.UtcNow)
+            .OrderByDescending(v => v.ExpiresAt)
+            .Select(v => v.Code)
+            .FirstOrDefaultAsync();
+
+    private async Task<string> SaveCodeAsync(string phone)
+    {
         var previous = await _db.SmsVerifications
             .Where(v => v.Phone == phone && !v.IsUsed)
             .ToListAsync();
-
-        foreach (var v in previous)
-            v.IsUsed = true;
+        foreach (var v in previous) v.IsUsed = true;
 
         var code = GenerateCode();
-
         _db.SmsVerifications.Add(new SmsVerification
         {
             Phone = phone,
@@ -35,9 +47,8 @@ public class SmsVerificationService
             ExpiresAt = DateTime.UtcNow.AddMinutes(10),
             IsUsed = false
         });
-
         await _db.SaveChangesAsync();
-        await _sms.SendVerificationCodeAsync(phone, code);
+        return code;
     }
 
     public async Task<bool> VerifyCodeAsync(string phone, string code)
