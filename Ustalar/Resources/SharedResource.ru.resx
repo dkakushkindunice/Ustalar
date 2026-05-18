@@ -121,6 +121,18 @@
   <data name="SendReview" xml:space="preserve"><value>Оставить отзыв</value></data>
   <data name="ReviewSent" xml:space="preserve"><value>Ваш отзыв отправлен. Будет опубликован после модерации.</value></data>
 
+  <!-- Admin -->
+  <data name="AdminPanel" xml:space="preserve"><value>Панель администратора</value></data>
+  <data name="All" xml:space="preserve"><value>Все</value></data>
+  <data name="Active" xml:space="preserve"><value>Активен</value></data>
+  <data name="Blocked" xml:space="preserve"><value>Заблокирован</value></data>
+  <data name="Name" xml:space="preserve"><value>Имя</value></data>
+  <data name="Status" xml:space="preserve"><value>Статус</value></data>
+  <data name="Date" xml:space="preserve"><value>Дата</value></data>
+  <data name="Approve" xml:space="preserve"><value>Одобрить</value></data>
+  <data name="BlockMaster" xml:space="preserve"><value>Заблокировать</value></data>
+  <data name="Restore" xml:space="preserve"><value>Восстановить</value></data>
+
   <!-- Errors -->
   <data name="PageNotFound" xml:space="preserve"><value>Страница не найдена</value></data>
   <data name="PageNotFoundMsg" xml:space="preserve"><value>Запрашиваемая страница не существует или была удалена.</value></data>

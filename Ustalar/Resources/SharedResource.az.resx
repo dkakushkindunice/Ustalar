@@ -113,6 +113,9 @@
   <data name="ProfilePending" xml:space="preserve"><value>Profiliniz moderasiyadadır. Təsdiqdən sonra kataloqda görünəcəksiniz.</value></data>
   <data name="ProfileBlocked" xml:space="preserve"><value>Profiliniz bloklanıb. Ətraflı məlumat üçün bizimlə əlaqə saxlayın.</value></data>
   <data name="DeletePhotoConfirm" xml:space="preserve"><value>Fotoşəkili sil?</value></data>
+  
+  <!-- Cabinet Edit-->
+  <data name="PleaseSelectImage" xml:space="preserve"><value>Zəhmət olmasa şəkil seçin.</value></data>
 
   <!-- Reviews form -->
   <data name="YourName" xml:space="preserve"><value>Adınız</value></data>
@@ -120,6 +123,18 @@
   <data name="CommentPlaceholder" xml:space="preserve"><value>İş haqqında fikirlərinizi yazın...</value></data>
   <data name="SendReview" xml:space="preserve"><value>Rəy göndər</value></data>
   <data name="ReviewSent" xml:space="preserve"><value>Rəyiniz göndərildi. Moderasiyadan sonra dərc olunacaq.</value></data>
+
+  <!-- Admin -->
+  <data name="AdminPanel" xml:space="preserve"><value>Admin panel</value></data>
+  <data name="All" xml:space="preserve"><value>Hamısı</value></data>
+  <data name="Active" xml:space="preserve"><value>Aktiv</value></data>
+  <data name="Blocked" xml:space="preserve"><value>Blok</value></data>
+  <data name="Name" xml:space="preserve"><value>Ad</value></data>
+  <data name="Status" xml:space="preserve"><value>Status</value></data>
+  <data name="Date" xml:space="preserve"><value>Tarix</value></data>
+  <data name="Approve" xml:space="preserve"><value>Təsdiqlə</value></data>
+  <data name="BlockMaster" xml:space="preserve"><value>Blokla</value></data>
+  <data name="Restore" xml:space="preserve"><value>Bərpa et</value></data>
 
   <!-- Errors -->
   <data name="PageNotFound" xml:space="preserve"><value>Səhifə tapılmadı</value></data>

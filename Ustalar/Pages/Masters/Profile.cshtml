@@ -17,15 +17,6 @@
     }
 }
 
-@{
-    var _c = System.Globalization.CultureInfo.CurrentUICulture.Name;                                                                                                                                      
-    var _t = Localizer["Masters"];                                                                                                                                                                        
-}
-<div style="background:red;color:white;padding:8px;font-family:monospace;font-size:11px">                                                                                                                 
-    Culture: @_c |                                                                                                                                                                                        
-    Localizer["Masters"] = "@_t.Value" |
-    NotFound:1 @_t.ResourceNotFound                                                                                                                                                                        
-</div> 
 <div class="max-w-4xl mx-auto px-4 py-8">
 
     <nav class="text-sm text-gray-400 mb-6 flex gap-1 items-center flex-wrap">

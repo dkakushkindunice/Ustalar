@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
+using Ustalar;
 using Ustalar.Data;
 using Ustalar.Services;
 
@@ -14,12 +16,14 @@ public class EditModel : PageModel
     private readonly ApplicationDbContext _db;
     private readonly ImageProcessingService _imaging;
     private readonly IFileStorageService _storage;
+    private readonly IStringLocalizer<SharedResource> _localizer;
 
-    public EditModel(ApplicationDbContext db, ImageProcessingService imaging, IFileStorageService storage)
+    public EditModel(ApplicationDbContext db, ImageProcessingService imaging, IFileStorageService storage, IStringLocalizer<SharedResource> localizer)
     {
         _db = db;
         _imaging = imaging;
         _storage = storage;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -82,7 +86,7 @@ public class EditModel : PageModel
 
         if (avatar == null || avatar.Length == 0)
         {
-            AvatarError = "Zəhmət olmasa şəkil seçin.";
+            AvatarError = _localizer["PhotoRequired"];
             await LoadViewData(master);
             return Page();
         }
