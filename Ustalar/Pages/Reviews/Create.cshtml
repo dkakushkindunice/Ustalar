@@ -12,7 +12,7 @@
 }
 else
 {
-    <form method="post" class="space-y-4">
+    <form method="post" action="/reviews/@Model.MasterId" class="space-y-4">
         @Html.AntiForgeryToken()
 
         @if (!string.IsNullOrEmpty(Model.ErrorMessage))

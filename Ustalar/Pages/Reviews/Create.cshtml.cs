@@ -22,6 +22,7 @@ public class CreateModel : PageModel
     [BindProperty]
     public InputModel Input { get; set; } = new();
 
+    public int MasterId { get; set; }
     public bool Success { get; set; }
     public string? ErrorMessage { get; set; }
 
@@ -39,10 +40,11 @@ public class CreateModel : PageModel
         public string? Text { get; set; }
     }
 
-    public void OnGet(int masterId) { }
+    public void OnGet(int masterId) { MasterId = masterId; }
 
     public async Task<IActionResult> OnPostAsync(int masterId)
     {
+        MasterId = masterId;
         if (!ModelState.IsValid) return Page();
 
         var masterExists = await _db.Masters
