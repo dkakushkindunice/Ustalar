@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Scan Razor Pages for class names */
+@source "../../Pages/**/*.cshtml";
+
 @theme {
     --color-primary: #ea580c;
     --color-primary-hover: #c2410c;
