@@ -47,10 +47,14 @@ public class CreateModel : PageModel
         MasterId = masterId;
         if (!ModelState.IsValid) return Page();
 
-        var masterExists = await _db.Masters
-            .AnyAsync(m => m.Id == masterId && m.Status == MasterStatus.Active);
+        var master = await _db.Masters
+            .Where(m => m.Id == masterId && m.Status == MasterStatus.Active)
+            .Include(m => m.City)
+            .Include(m => m.MasterSpecializations).ThenInclude(ms => ms.Specialization)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
 
-        if (!masterExists)
+        if (master == null)
         {
             ErrorMessage = "Usta tapılmadı";
             return Page();
@@ -69,7 +73,9 @@ public class CreateModel : PageModel
 
         await _db.SaveChangesAsync();
 
-        Success = true;
-        return Page();
+        TempData["ReviewSent"] = true;
+        var citySlug = master.City!.Slug;
+        var specSlug = master.MasterSpecializations.FirstOrDefault()?.Specialization.Slug ?? "";
+        return Redirect($"/masters/{citySlug}/{specSlug}/{masterId}");
     }
 }

@@ -4,14 +4,6 @@
     Layout = null;
 }
 
-@if (Model.Success)
-{
-    <div class="bg-green-50 border border-green-200 text-green-700 rounded-lg px-4 py-3 text-sm">
-        @Localizer["ReviewSent"]
-    </div>
-}
-else
-{
     <form method="post" action="/reviews/@Model.MasterId" class="space-y-4">
         @Html.AntiForgeryToken()
 
@@ -60,4 +52,3 @@ else
             @Localizer["SendReview"]
         </button>
     </form>
-}

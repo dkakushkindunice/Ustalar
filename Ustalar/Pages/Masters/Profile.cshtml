@@ -157,6 +157,12 @@
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                 <h2 class="font-semibold text-gray-900 mb-4">@Localizer["WriteReview"]</h2>
+                @if (TempData["ReviewSent"] != null)
+                {
+                    <div class="bg-green-50 border border-green-200 text-green-700 rounded-lg px-4 py-3 text-sm mb-4">
+                        @Localizer["ReviewSent"]
+                    </div>
+                }
                 <div hx-get="/reviews/@Model.Master.Id"
                      hx-trigger="load"
                      hx-swap="innerHTML">

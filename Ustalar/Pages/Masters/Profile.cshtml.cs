@@ -61,4 +61,7 @@ public class ProfileModel : PageModel
 
         return Page();
     }
+
+    public IActionResult OnPost(string citySlug, string specSlug, int masterId) =>
+        RedirectToPage(new { citySlug, specSlug, masterId });
 }
