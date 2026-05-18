@@ -123,6 +123,10 @@
 
   <!-- Admin -->
   <data name="AdminPanel" xml:space="preserve"><value>Панель администратора</value></data>
+  <data name="ReviewsModeration" xml:space="preserve"><value>Модерация отзывов</value></data>
+  <data name="NoPendingReviews" xml:space="preserve"><value>Нет отзывов на проверке</value></data>
+  <data name="Reject" xml:space="preserve"><value>Отклонить</value></data>
+  <data name="MasterLabel" xml:space="preserve"><value>Мастер</value></data>
   <data name="All" xml:space="preserve"><value>Все</value></data>
   <data name="Active" xml:space="preserve"><value>Активен</value></data>
   <data name="Blocked" xml:space="preserve"><value>Заблокирован</value></data>

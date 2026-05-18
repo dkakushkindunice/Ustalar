@@ -26,6 +26,7 @@ public class IndexModel : PageModel
     public int TotalPages { get; set; }
     public string CurrentStatus { get; set; } = "";
     public int PendingCount { get; set; }
+    public int PendingReviewsCount { get; set; }
 
     public async Task OnGetAsync(string? status, int page = 1)
     {
@@ -33,6 +34,7 @@ public class IndexModel : PageModel
         CurrentPage = page < 1 ? 1 : page;
 
         PendingCount = await _db.Masters.CountAsync(m => m.Status == MasterStatus.Pending);
+        PendingReviewsCount = await _db.Reviews.CountAsync(r => !r.IsApproved);
 
         var query = _db.Masters
             .Include(m => m.City)

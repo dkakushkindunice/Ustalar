@@ -126,6 +126,10 @@
 
   <!-- Admin -->
   <data name="AdminPanel" xml:space="preserve"><value>Admin panel</value></data>
+  <data name="ReviewsModeration" xml:space="preserve"><value>Rəylər moderasiyası</value></data>
+  <data name="NoPendingReviews" xml:space="preserve"><value>Gözləyən rəy yoxdur</value></data>
+  <data name="Reject" xml:space="preserve"><value>Rədd et</value></data>
+  <data name="MasterLabel" xml:space="preserve"><value>Usta</value></data>
   <data name="All" xml:space="preserve"><value>Hamısı</value></data>
   <data name="Active" xml:space="preserve"><value>Aktiv</value></data>
   <data name="Blocked" xml:space="preserve"><value>Blok</value></data>
