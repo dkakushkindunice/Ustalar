@@ -21,6 +21,7 @@
                 <a href="/masters" class="text-gray-600 hover:text-orange-600">@Localizer["Masters"]</a>
                 @if (User.Identity?.IsAuthenticated == true && User.Identity.AuthenticationType == "MasterCookie")
                 {
+                    <span class="text-gray-500">@User.Identity.Name</span>
                     <a href="/cabinet" class="text-gray-600 hover:text-orange-600">@Localizer["Cabinet"]</a>
                 }
                 else
