@@ -1,51 +1,105 @@
 services:
-  app:
-    build:
-      context: ./Ustalar
-      dockerfile: Dockerfile
-    image: ustalar-app:latest
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__Default=${DB_CONNECTION:-Host=postgres;Port=5432;Database=ustalar;Username=ustalar;Password=ustalar_pass}
-    volumes:
-      - dataprotection-keys:/root/.aspnet/DataProtection-Keys
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    networks:
-      - ustalar-net
 
   postgres:
-    image: postgres:17.9-alpine
+    image: postgres:17-alpine
+    container_name: ustalar-postgres
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: ustalar
-      POSTGRES_USER: ustalar
-      POSTGRES_PASSWORD: ustalar_pass
+      POSTGRES_USER: ${POSTGRES_USER:-ustalar}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ustalar_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-ustalar}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ustalar -d ustalar"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ustalar} -d ${POSTGRES_DB:-ustalar}"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
       - ustalar-net
 
+  app:
+    build:
+      context: ./Ustalar
+      dockerfile: Dockerfile
+    container_name: ustalar-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__Default: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-ustalar};Username=${POSTGRES_USER:-ustalar};Password=${POSTGRES_PASSWORD:-ustalar_pass}"
+    volumes:
+      - dataprotection:/root/.aspnet/DataProtection-Keys
+      - uploads:/app/wwwroot/uploads
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - ustalar-net
+
   nginx:
     image: nginx:1.27-alpine
+    container_name: ustalar-nginx
+    restart: always
+    env_file:
+      - .env
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.conf:/tmp/nginx.conf.template:ro
+      - certbot-etc:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
+    command: >
+      sh -c "
+        envsubst '$$DOMAIN' < /tmp/nginx.conf.template > /etc/nginx/nginx.conf &&
+        nginx -g 'daemon off;'
+      "
     depends_on:
       - app
+    networks:
+      - ustalar-net
+
+  # Автообновление SSL-сертификата каждые 12 часов
+  certbot-renew:
+    image: certbot/certbot
+    container_name: ustalar-certbot-renew
+    restart: unless-stopped
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
+    entrypoint: >
+      sh -c "trap exit TERM;
+             while :; do
+               certbot renew --webroot -w /var/www/certbot --quiet;
+               nginx -s reload 2>/dev/null || true;
+               sleep 12h;
+             done"
+    networks:
+      - ustalar-net
+
+  # Первичное получение сертификата — запускается один раз вручную
+  certbot-initial:
+    image: certbot/certbot
+    container_name: ustalar-certbot-initial
+    profiles:
+      - init
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
+    command: >
+      certonly --webroot -w /var/www/certbot
+      -d ${DOMAIN} -d www.${DOMAIN}
+      --non-interactive --agree-tos
+      --email ${CERTBOT_EMAIL}
     networks:
       - ustalar-net
 
@@ -55,4 +109,7 @@ networks:
 
 volumes:
   pgdata:
-  dataprotection-keys:
+  dataprotection:
+  uploads:
+  certbot-etc:
+  certbot-www:
