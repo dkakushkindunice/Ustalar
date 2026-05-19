@@ -28,7 +28,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__Default: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-ustalar};Username=${POSTGRES_USER:-ustalar};Password=${POSTGRES_PASSWORD:-ustalar_pass}"
     volumes:
