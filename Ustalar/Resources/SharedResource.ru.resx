@@ -142,4 +142,7 @@
   <data name="PageNotFoundMsg" xml:space="preserve"><value>Запрашиваемая страница не существует или была удалена.</value></data>
   <data name="ErrorOccurred" xml:space="preserve"><value>Произошла ошибка</value></data>
   <data name="ErrorMsg" xml:space="preserve"><value>Произошла техническая ошибка. Попробуйте позже.</value></data>
+  <data name="Language" xml:space="preserve">
+    <value>Язык</value>
+  </data>
 </root>

@@ -41,7 +41,7 @@
     <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
         @foreach (var spec in Model.PopularSpecs)
         {
-            <a href="/masters/@spec.Slug"
+            <a href="/masters?specSlug=@spec.Slug"
                class="bg-white border border-gray-100 rounded-xl p-4 text-center hover:border-orange-200 hover:shadow-sm transition">
                 <p class="text-sm font-medium text-gray-800">@spec.GetName()</p>
             </a>

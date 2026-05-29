@@ -145,4 +145,7 @@
   <data name="PageNotFoundMsg" xml:space="preserve"><value>Axtardığınız səhifə mövcud deyil və ya silinib.</value></data>
   <data name="ErrorOccurred" xml:space="preserve"><value>Xəta baş verdi</value></data>
   <data name="ErrorMsg" xml:space="preserve"><value>Texniki problem yarandı. Bir az sonra yenidən cəhd edin.</value></data>
+  <data name="Language" xml:space="preserve">
+    <value>Dil</value>
+  </data>
 </root>
