@@ -28,6 +28,11 @@ bld/
 !.env.example
 appsettings.*.local.json
 
+# Node
+node_modules/
+**/node_modules/
+**/package-lock.json
+
 # Docker
 nginx/certs/
 
