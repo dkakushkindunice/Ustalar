@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.RateLimiting;
@@ -25,6 +26,7 @@ public class CreateModel : PageModel
     public int MasterId { get; set; }
     public bool Success { get; set; }
     public string? ErrorMessage { get; set; }
+    public bool IsAuthenticated { get; set; }
 
     public class InputModel
     {
@@ -40,11 +42,31 @@ public class CreateModel : PageModel
         public string? Text { get; set; }
     }
 
-    public void OnGet(int masterId) { MasterId = masterId; }
+    public void OnGet(int masterId)
+    {
+        MasterId = masterId;
+        IsAuthenticated = User.Identity?.IsAuthenticated ?? false;
+        if (IsAuthenticated)
+        {
+            Input.ReviewerName = User.FindFirstValue(ClaimTypes.Name) ?? string.Empty;
+            Input.ReviewerPhone = User.FindFirstValue("Phone") ?? string.Empty;
+        }
+    }
 
     public async Task<IActionResult> OnPostAsync(int masterId)
     {
         MasterId = masterId;
+        IsAuthenticated = User.Identity?.IsAuthenticated ?? false;
+
+        // Если пользователь залогинен — берём данные из claims, игнорируем поля формы
+        if (IsAuthenticated)
+        {
+            Input.ReviewerName = User.FindFirstValue(ClaimTypes.Name) ?? string.Empty;
+            Input.ReviewerPhone = User.FindFirstValue("Phone") ?? string.Empty;
+            ModelState.Remove(nameof(Input.ReviewerName));
+            ModelState.Remove(nameof(Input.ReviewerPhone));
+        }
+
         if (!ModelState.IsValid) return Page();
 
         var master = await _db.Masters

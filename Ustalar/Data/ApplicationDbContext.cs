@@ -3,7 +3,7 @@ using Ustalar.Models;
 
 namespace Ustalar.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : DbContext 
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

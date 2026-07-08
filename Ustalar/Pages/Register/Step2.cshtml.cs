@@ -41,7 +41,7 @@ public class Step2Model : PageModel
 
         if (!valid)
         {
-            ErrorMessage = "Kod yanlışdır və ya müddəti bitib";
+            ErrorMessage = "Kod yanlışdır və ya müddəti bitib"; //TODO: translate comment 
             return Page();
         }
 
@@ -50,3 +50,4 @@ public class Step2Model : PageModel
         return RedirectToPage("/Register/Step3");
     }
 }
+//TODO: graphana + promiteus 
