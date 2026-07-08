@@ -10,6 +10,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-ustalar}
     volumes:
       - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ustalar} -d ${POSTGRES_DB:-ustalar}"]
       interval: 10s
@@ -52,15 +54,22 @@ services:
     env_file:
       - .env
     ports:
-      - "80:80"
-      - "443:443"
+      - "81:80"
+      - "444:443"
     volumes:
       - ./nginx/nginx.conf:/tmp/nginx.conf.template:ro
+      - ./nginx/nginx.http.conf:/tmp/nginx.http.conf:ro
       - certbot-etc:/etc/letsencrypt
       - certbot-www:/var/www/certbot
     command: >
       sh -c "
-        envsubst '$$DOMAIN' < /tmp/nginx.conf.template > /etc/nginx/nginx.conf &&
+        CERT=/etc/letsencrypt/live/$$DOMAIN/fullchain.pem;
+        if [ -f $$CERT ]; then
+          envsubst '$$DOMAIN' < /tmp/nginx.conf.template > /etc/nginx/nginx.conf;
+        else
+          cp /tmp/nginx.http.conf /etc/nginx/nginx.conf;
+          echo 'SSL cert not found, starting in HTTP-only mode';
+        fi &&
         nginx -g 'daemon off;'
       "
     depends_on:
